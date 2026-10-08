@@ -4,11 +4,15 @@
 
 Studentisches Projekt im Kurs *Big Data* an der HTW Berlin (2026). Wir haben untersucht, ob und wie das Grundwasser auf dem ehemaligen Flughafengelände Berlin-Tegel auf Niederschlag reagiert. Die Ergebnisse haben wir als Data Story für ein breites Publikum (ab ca. 12 Jahren) aufbereitet.
 
-**Ergebnis ansehen:** [`docs/index.html`](docs/index.html) im Browser öffnen. Über GitHub Pages wird der Ordner `docs/` direkt als Website veröffentlicht (siehe [Website veröffentlichen](#website-veröffentlichen)).
+**Ergebnis ansehen:** **[Website öffnen](https://phanhuyensk9.github.io/TegelGrundwasser-datastory/)** – die Data Story läuft direkt im Browser, ohne Installation. Lokal: [`docs/index.html`](docs/index.html) im Browser öffnen.
+
+[![Screenshot der Website](docs/screenshots/hero.png)](https://phanhuyensk9.github.io/TegelGrundwasser-datastory/)
 
 **Analyse ansehen:** [`Grundwasser.pbix`](Grundwasser.pbix) mit Power BI Desktop öffnen. Der Bericht enthält die vollständige Auswertung mit allen Diagrammen und Kennzahlen (siehe [Power-BI-Bericht](#power-bi-bericht)).
 
-![Screenshot der Website](docs/screenshots/hero.png)
+| Seite „Regen & Grundwasser“ | Seite „Verzögerung“ |
+|---|---|
+| ![Power BI – Seite Regen & Grundwasser](docs/screenshots/powerbi-regen-grundwasser.png) | ![Power BI – Seite Verzögerung](docs/screenshots/powerbi-verzoegerung.png) |
 
 ---
 
@@ -115,10 +119,6 @@ Alle aufbereiteten Dateien in `data/processed/` sind UTF-8, Komma-getrennt, Dezi
 
 `Grundwasser.pbix` enthält die Auswertung als interaktiven Bericht mit den Seiten *Regen*, *Frühjahr 2025*, *Regen & Grundwasser*, *Verzögerung*, *19. April 2026* und *Gesamtbilanz*. Die Kennzahlen (Regensummen, Grundwasser-Mediane, zeitversetzte Korrelation) werden im Bericht selbst aus den Rohdaten berechnet – Python ist dafür nicht nötig.
 
-| Seite „Regen & Grundwasser“ | Seite „Verzögerung“ |
-|---|---|
-| ![Power BI – Seite Regen & Grundwasser](docs/screenshots/powerbi-regen-grundwasser.png) | ![Power BI – Seite Verzögerung](docs/screenshots/powerbi-verzoegerung.png) |
-
 Voraussetzung: [Power BI Desktop](https://www.microsoft.com/de-de/power-platform/products/power-bi/desktop) (kostenlos, nur Windows).
 
 **Bericht mit neuen Daten aktualisieren:**
@@ -145,7 +145,7 @@ Das Skript liest `data/raw/`, prüft die Kennzahlen, schreibt `data/processed/` 
 
 ### Website veröffentlichen
 
-Auf GitHub: *Settings → Pages → Branch `main`, Ordner `/docs`*. Danach ist die Website unter `https://<name>.github.io/<repository>/` erreichbar.
+Auf GitHub: *Settings → Pages → Branch `main`, Ordner `/docs`*. Danach ist die Website unter [https://phanhuyensk9.github.io/TegelGrundwasser-datastory/](https://phanhuyensk9.github.io/TegelGrundwasser-datastory/) erreichbar.
 
 ## Weiterarbeiten – Hinweise für Projektpartner
 
