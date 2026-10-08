@@ -6,6 +6,8 @@ Studentisches Projekt im Kurs *Big Data* an der HTW Berlin (2026). Wir haben unt
 
 **Ergebnis ansehen:** [`docs/index.html`](docs/index.html) im Browser öffnen. Über GitHub Pages wird der Ordner `docs/` direkt als Website veröffentlicht (siehe [Website veröffentlichen](#website-veröffentlichen)).
 
+**Analyse ansehen:** [`Grundwasser.pbix`](Grundwasser.pbix) mit Power BI Desktop öffnen. Der Bericht enthält die vollständige Auswertung mit allen Diagrammen und Kennzahlen (siehe [Power-BI-Bericht](#power-bi-bericht)).
+
 ![Screenshot der Website](docs/screenshots/hero.png)
 
 ---
@@ -83,7 +85,7 @@ Analysezeitraum: **01.03.2025 – 22.09.2026**, 8 Grundwassermessstellen, tägli
 │   ├── index.html                     Website, Fotos aus docs/img/
 │   ├── tegel-datastory-einzeldatei.html  eine Datei, Fotos online
 │   ├── img/                           Fotos (Wikimedia Commons)
-│   └── screenshots/                   Screenshots für diese README
+│   └── screenshots/                   Screenshots für diese README (Website und Power BI)
 ├── Grundwasser.pbix  Power-BI-Bericht mit denselben Auswertungen
 ├── requirements.txt
 └── LICENSE
@@ -112,6 +114,10 @@ Alle aufbereiteten Dateien in `data/processed/` sind UTF-8, Komma-getrennt, Dezi
 ## Power-BI-Bericht
 
 `Grundwasser.pbix` enthält die Auswertung als interaktiven Bericht mit den Seiten *Regen*, *Frühjahr 2025*, *Regen & Grundwasser*, *Verzögerung*, *19. April 2026* und *Gesamtbilanz*. Die Kennzahlen (Regensummen, Grundwasser-Mediane, zeitversetzte Korrelation) werden im Bericht selbst aus den Rohdaten berechnet – Python ist dafür nicht nötig.
+
+| Seite „Regen & Grundwasser“ | Seite „Verzögerung“ |
+|---|---|
+| ![Power BI – Seite Regen & Grundwasser](docs/screenshots/powerbi-regen-grundwasser.png) | ![Power BI – Seite Verzögerung](docs/screenshots/powerbi-verzoegerung.png) |
 
 Voraussetzung: [Power BI Desktop](https://www.microsoft.com/de-de/power-platform/products/power-bi/desktop) (kostenlos, nur Windows).
 
@@ -190,4 +196,4 @@ Für die **Tegeler Stadtheide** und das **CityLAB Berlin**:
 
 ---
 
-*Team: HTW Berlin, Kurs Big Data.*
+*Team: Data in Motion, HTW Berlin, Kurs Big Data.*
