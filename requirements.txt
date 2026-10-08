@@ -1,0 +1,8 @@
+# Python-Abhängigkeiten für src/build_tegel.py (Python >= 3.10)
+# Installation: pip install -r requirements.txt
+pandas>=2.0
+
+# Für den Power-BI-Bericht Grundwasser.pbix (nicht über pip installierbar):
+#   Power BI Desktop, kostenlos, nur Windows
+#   https://www.microsoft.com/de-de/power-platform/products/power-bi/desktop
+#   Bericht öffnen -> Start -> Aktualisieren (siehe README, Abschnitt Power-BI-Bericht)

@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vom Rollfeld zur Schwammstadt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>__LEAFLET_CSS__</style>
+<style>
+:root{
+  --paper:#f7f7f5; --ink:#15191c; --ink-2:#434b52; --muted:#65707a; --rule:#d8dcdf; --card:#ffffff;
+  --asphalt-bg:#e4e6e7; --asphalt:#5d656c; --asphalt-dark:#2b3136;
+  --dry-bg:#f4ead9; --dry:#b85716; --dry-soft:#e8b27c;
+  --water-bg:#e5eff7; --rain:#1f6fc2; --rain-soft:#8fbbe8; --gw:#0b5c6b; --gw-soft:#7cc1c9;
+  --green-bg:#e6f0e3; --green:#2c7a47; --green-soft:#9ccaa8;
+  --band:rgba(31,111,194,.12); --band-dry:rgba(184,87,22,.14);
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300; --s7:#4a3aa7; --s8:#e34948;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --sans:"Atkinson Hyperlegible",Verdana,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:19px;line-height:1.55}
+a{color:var(--rain)}
+.ch{padding-inline:16px;padding-block:72px}
+.inner{max-width:680px;margin:0 auto;display:grid;gap:20px}
+.wide{max-width:1040px;margin:0 auto;display:grid;gap:22px}
+.mood-asphalt{background:var(--asphalt-bg)}
+.mood-dry{background:var(--dry-bg)}
+.mood-water{background:var(--water-bg)}
+.mood-green{background:var(--green-bg)}
+h1,h2,h3{font-family:var(--display);font-stretch:112%;line-height:1.02;margin:0;text-wrap:balance}
+h1{font-size:clamp(2.6rem,9vw,5.2rem);font-weight:800;letter-spacing:-.015em}
+h2{font-size:clamp(1.9rem,6vw,3rem);font-weight:750}
+h3{font-size:1.25rem;font-weight:700}
+p{margin:0}
+.kicker{font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.lead{font-size:1.2rem;color:var(--ink-2)}
+.short{display:grid;gap:10px}
+.big{font-family:var(--display);font-stretch:125%;font-weight:800;line-height:.95;font-size:clamp(3rem,15vw,6.5rem);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.big small{font-size:.38em;font-weight:700;letter-spacing:0}
+.statement{font-family:var(--display);font-stretch:112%;font-weight:750;font-size:clamp(1.6rem,5.5vw,2.6rem);line-height:1.1;text-wrap:balance}
+.caveat{border-left:4px solid var(--dry);padding:4px 0 4px 14px;color:var(--ink-2);font-size:1rem}
+.caveat.blue{border-color:var(--gw)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.tile-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.tile{background:var(--card);border-radius:10px;padding:16px;display:grid;gap:4px;align-content:start}
+.tile .v{font-family:var(--display);font-stretch:118%;font-weight:800;font-size:2.1rem;line-height:1;font-variant-numeric:tabular-nums}
+.tile .l{font-size:.9rem;color:var(--ink-2)}
+.tile.hot{background:var(--rain);color:#fff}.tile.hot .l{color:#e8f1fb}
+
+/* hero */
+.hero{position:relative;background:#1d2226;color:#fff;min-height:min(86vh,760px);display:grid;align-items:end}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(.55) contrast(1.05)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,12,14,.15) 0%,rgba(10,12,14,.25) 40%,rgba(10,12,14,.86) 100%)}
+.hero .txt{position:relative;z-index:1;padding:56px 16px 22px;max-width:1040px;margin:0 auto;width:100%;display:grid;gap:14px}
+.hero .sub{font-size:clamp(1.15rem,3.6vw,1.5rem);max-width:34ch;color:#e6ecef}
+.hero .cap{font-size:.72rem;color:#c3cbd1;font-family:var(--mono)}
+.hero .cap a{color:#d9e7f5}
+.follow{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-stretch:112%;font-size:1.1rem;color:var(--ink);text-decoration:none;border:2px solid var(--ink);border-radius:999px;padding:8px 18px;justify-self:start}
+.follow span{display:inline-block;animation:drip 1.6s ease-in-out infinite}
+@keyframes drip{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+/* figures */
+figure{margin:0;display:grid;gap:8px;min-width:0}
+.two>*,.wide>*,.inner>*{min-width:0}
+figure img{width:100%;height:auto;display:block;border-radius:8px;background:var(--rule)}
+figcaption,.src{font-size:.8rem;line-height:1.45;color:var(--muted)}
+figcaption b{color:var(--ink-2);font-weight:700}
+.src{font-family:var(--mono);font-size:.72rem;border-top:1px solid var(--rule);padding-top:8px}
+.panel{background:var(--card);border-radius:12px;padding:16px;display:grid;gap:12px;min-width:0}
+.chart{position:relative;width:100%;min-width:0}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+svg .lbl{fill:var(--ink-2)} svg .strong{fill:var(--ink);font-weight:600}
+.label-tag{display:inline-block;font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:var(--ink);color:var(--paper)}
+
+/* kinds & refs */
+.kind{display:inline-flex;gap:4px;align-items:center;font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--rule);border-radius:3px;padding:0 5px;color:var(--ink-2);white-space:nowrap;vertical-align:2px;line-height:1.7;background:var(--card)}
+.kinds{display:flex;flex-wrap:wrap;gap:8px 12px;font-size:.85rem;color:var(--ink-2);align-items:center}
+.ref{font-family:var(--mono);font-size:.66em;vertical-align:super;line-height:0;color:var(--rain);text-decoration:none;padding:0 1px;cursor:pointer}
+.info{font-family:var(--sans);font-size:.9rem;line-height:1;border:0;background:none;color:var(--muted);cursor:pointer;padding:2px 4px;vertical-align:middle;border-radius:50%}
+.big .info{font-size:1.4rem;vertical-align:.9em}
+.info:hover{color:var(--ink)}
+.pop{position:absolute;z-index:1000;width:min(360px,calc(100vw - 32px));background:var(--card);color:var(--ink);border:1px solid var(--rule);border-radius:10px;box-shadow:0 12px 36px rgba(0,0,0,.2);padding:14px 16px 12px;font-size:.92rem;line-height:1.45;display:grid;gap:6px}
+.pop h4{margin:0;font-family:var(--display);font-stretch:108%;font-size:1.05rem;line-height:1.2}
+.pop dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 10px}
+.pop dt{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-top:3px}
+.pop dd{margin:0;overflow-wrap:anywhere}
+.pop .x{position:absolute;top:4px;right:6px;border:0;background:none;font-size:1.3rem;color:var(--muted);cursor:pointer;padding:4px 8px}
+.pop .pv{font-family:var(--display);font-stretch:118%;font-size:1.7rem;font-weight:800}
+.tip{position:fixed;z-index:900;pointer-events:none;background:var(--card);color:var(--ink);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:12px;line-height:1.5;box-shadow:0 6px 20px rgba(0,0,0,.16);max-width:260px}
+.tip b{font-weight:600}
+
+/* compare slider */
+.compare{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:4/3;max-width:100%;background:#333;touch-action:pan-y}
+.compare img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.compare .after{clip-path:inset(0 0 0 var(--pos,50%))}
+.compare .bar{position:absolute;top:0;bottom:0;left:var(--pos,50%);width:3px;background:#fff;transform:translateX(-1.5px);pointer-events:none}
+.compare .knob{position:absolute;top:50%;left:var(--pos,50%);transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:#fff;color:#111;display:grid;place-items:center;font-weight:700;pointer-events:none;box-shadow:0 2px 10px rgba(0,0,0,.35)}
+.compare .tag{position:absolute;top:12px;font-family:var(--mono);font-size:.72rem;font-weight:600;background:rgba(0,0,0,.72);color:#fff;padding:4px 8px;border-radius:4px}
+.compare .tag.l{left:12px}.compare .tag.r{right:12px}
+.compare input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+
+/* sponge flows */
+.flows{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.flow{border-radius:12px;padding:14px 10px;display:grid;gap:6px;justify-items:center;text-align:center;align-content:start}
+.flow.grey{background:var(--asphalt-bg)}
+.flow.green{background:var(--green-bg)}
+.flow h3{font-size:1rem}
+.step-ico{display:grid;justify-items:center;gap:2px;font-size:.85rem;color:var(--ink-2)}
+.step-ico svg{width:44px;height:44px}
+.arrow{color:var(--muted);font-size:1rem;line-height:1;animation:down 2s ease-in-out infinite}
+.flow.green .arrow{animation-duration:3.2s}
+@keyframes down{0%{opacity:.3;transform:translateY(-3px)}50%{opacity:1;transform:translateY(3px)}100%{opacity:.3;transform:translateY(-3px)}}
+.end{font-family:var(--display);font-weight:700;font-stretch:108%;font-size:.95rem;padding:4px 10px;border-radius:999px}
+.flow.grey .end{background:var(--asphalt);color:var(--paper)}
+.flow.green .end{background:var(--green);color:var(--paper)}
+
+/* map */
+#map{height:min(70vh,560px);min-height:360px;border-radius:10px;background:var(--card);z-index:0}
+.leaflet-container{font-family:var(--sans);background:var(--card)}
+.leaflet-popup-content{margin:12px 14px;font-size:.9rem;line-height:1.4;min-width:220px}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--card);color:var(--ink)}
+.leaflet-control-attribution{font-size:11px}
+.leaflet-container a.leaflet-popup-close-button{color:var(--muted)}
+.mk{display:grid;place-items:center;border-radius:999px;font-family:var(--mono);font-size:10.5px;font-weight:600;color:#fff;border:2px solid var(--card);box-shadow:0 1px 4px rgba(0,0,0,.35);white-space:nowrap;padding:0 6px;height:26px}
+.slider-row{display:grid;gap:6px}
+.slider-row input{width:100%;accent-color:var(--gw)}
+.slider-row .d{font-family:var(--mono);font-size:.9rem}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem;color:var(--ink-2);align-items:center}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:4px}
+.legend i.sq{border-radius:2px}
+.station-btns{display:flex;flex-wrap:wrap;gap:6px}
+.station-btns button{font-family:var(--mono);font-size:.78rem;border:1px solid var(--rule);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 10px;cursor:pointer;min-height:36px}
+
+/* soil */
+.soil svg{width:100%;height:auto;display:block}
+
+/* scrolly */
+.scrolly{display:grid;gap:0}
+.sticky{position:sticky;top:env(safe-area-inset-top,0px);z-index:2;padding-block:10px;background:var(--water-bg)}
+.steps{display:grid;gap:55vh;padding-block:10vh 30vh;position:relative;z-index:3}
+.stepcard{background:var(--card);border-radius:12px;padding:16px 18px;box-shadow:0 6px 24px rgba(0,0,0,.10);max-width:520px;display:grid;gap:8px;border-left:5px solid var(--rule);cursor:pointer}
+.stepcard.on{border-left-color:var(--rain)}
+.stepcard.dry.on{border-left-color:var(--dry)}
+.stepcard.gw.on{border-left-color:var(--gw)}
+@media (min-width:900px){.scrolly{grid-template-columns:1.35fr 1fr;gap:32px}.sticky{top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;padding:0;background:none}.steps{padding-block:20vh 40vh;gap:60vh}}
+
+/* delay */
+.delay{display:grid;gap:0;justify-items:start;position:relative;padding-left:40px}
+.delay::before{content:"";position:absolute;left:15px;top:8px;bottom:8px;width:4px;border-radius:2px;background:linear-gradient(var(--rain),var(--gw))}
+.delay .drop{position:absolute;left:8px;width:18px;height:18px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--rain);animation:fall 7s linear infinite}
+@keyframes fall{0%{top:0;background:var(--rain)}85%{top:calc(100% - 18px);background:var(--gw)}100%{top:calc(100% - 18px);opacity:0}}
+.delay .st{padding:10px 0;display:grid;gap:2px}
+.delay .st b{font-family:var(--display);font-stretch:108%}
+.delay .st span{color:var(--ink-2);font-size:.95rem}
+
+/* barrels */
+.barrels{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:end}
+.barrel{display:grid;gap:8px;justify-items:center;text-align:center}
+.barrel svg{width:100%;max-width:170px;height:auto}
+
+/* timeline */
+.tl{list-style:none;margin:0;padding:0;display:grid;gap:0;position:relative}
+.tl li{display:grid;grid-template-columns:92px 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--rule)}
+.tl .y{font-family:var(--display);font-stretch:118%;font-weight:800;font-size:1.3rem}
+.tl .now{color:var(--gw)}
+
+/* closing */
+.closing{position:relative;min-height:min(92vh,820px);display:grid;align-items:center;color:#fff;background:#10202a}
+.closing img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.closing::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,20,28,.55),rgba(6,20,28,.8))}
+.closing .txt{position:relative;z-index:1;padding:64px 16px;max-width:900px;margin:0 auto;display:grid;gap:40vh}
+.closing .statement{font-size:clamp(1.9rem,6.5vw,3.4rem)}
+.closing .cap{font-family:var(--mono);font-size:.72rem;color:#c3cbd1}.closing .cap a{color:#d9e7f5}
+
+.projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.proj{background:var(--card);border-radius:10px;padding:16px;display:grid;gap:8px;align-content:start}
+.proj a.go{font-weight:700}
+.biblio{display:grid;gap:24px}
+.biblio ol{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.biblio li{display:grid;grid-template-columns:3em 1fr;gap:8px;font-size:.9rem;line-height:1.5;scroll-margin-top:24px}
+.biblio li:target{background:var(--band);border-radius:4px}
+.biblio .n{font-family:var(--mono);color:var(--muted)}
+.biblio a{overflow-wrap:anywhere}
+.biblio .meta{color:var(--ink-2);font-size:.84rem}
+.method ul{margin:0;padding-left:1.1em;display:grid;gap:8px;font-size:.95rem}
+.stand{font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;color:var(--ink-2);border:1px solid var(--rule);border-radius:3px;padding:2px 6px;justify-self:start;background:var(--card)}
+.two{display:grid;gap:16px}
+@media (min-width:760px){.two{grid-template-columns:1fr 1fr}}
+.buckets{display:flex;flex-wrap:wrap;gap:6px;align-items:end}
+.buckets svg{width:46px;height:52px}
+.pill{display:inline-block;font-family:var(--mono);font-size:.78rem;padding:2px 8px;border-radius:999px;background:var(--card);border:1px solid var(--rule)}
+</style>
+
+</head>
+<body>
+
+<!-- hero -->
+<header class="hero">
+  <img src="img/hero-2019.jpg" alt="Flughafen Tegel aus der Luft, 2019" width="1600" height="1200">
+  <div class="txt">
+    <div class="kicker" style="color:#c7d0d6">Berlin-Tegel · Regen &amp; Grundwasser · 2025–2026</div>
+    <h1>Vom Rollfeld zur Schwammstadt</h1>
+    <p class="sub">Was Regen und Grundwasser über die Zukunft von Berlin-Tegel erzählen</p>
+    <p class="cap">Flughafen Berlin-Tegel aus der Luft, April 2019. Foto: Rehman Abubakr, 2019. <a href="https://commons.wikimedia.org/wiki/File:Berlin_Tegel_Airport_(TXL)_-_April_2019_(2).jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>, verkleinert und entsättigt.</p>
+  </div>
+</header>
+
+<section class="ch mood-asphalt">
+  <div class="inner">
+    <div class="short lead">
+      <p>Mehr als 70 Jahre lang war Tegel ein Flughafen.<a class="ref" data-ref="12">[12]</a> Startbahnen, Rollwege und große Asphaltflächen bestimmten das Gelände.</p>
+      <p>Heute entsteht hier ein neues Stück Berlin. Wohnungen, Forschung, Unternehmen und Grünflächen sollen das ehemalige Flughafengelände verändern.<a class="ref" data-ref="6">[6]</a></p>
+      <p>Doch dabei gibt es eine Frage, die man auf den ersten Blick kaum sieht:</p>
+    </div>
+    <p class="statement">Was passiert mit dem Wasser?</p>
+    <a class="follow" href="#warum">Folge dem Wasser <span>↓</span></a>
+    <div class="kinds">
+      <span>So sind Angaben gekennzeichnet:</span>
+      <span class="kind">● Messwert</span><span class="kind">∑ Berechnung</span><span class="kind">≈ Statistik</span><span class="kind">◇ Interpretation</span><span class="kind">↗ Extern</span><span class="kind">▢ Planung</span>
+      <span><b>[n]</b> = Quelle, <b>ⓘ</b> = „Woher kommt diese Zahl?“ – beides antippen.</span>
+    </div>
+  </div>
+</section>
+
+<!-- why -->
+<section class="ch mood-asphalt" id="warum">
+  <div class="wide">
+    <figure>
+      <img src="img/runway-2015.jpg" alt="Landebahn Tegel 2015" loading="lazy" width="1600" height="1200">
+      <figcaption>Start- und Landebahn in Tegel, aufgenommen aus einem rollenden Flugzeug, Mai 2015. Foto: Orderinchaos, 2015. <a href="https://commons.wikimedia.org/wiki/File:Berlin_Tegel_runway_2015.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>, verkleinert.</figcaption>
+    </figure>
+    <div class="inner" style="margin:0">
+      <div class="kicker">Kapitel 1 · Asphalt</div>
+      <h2>Warum Wasser auf einem ehemaligen Flughafen wichtig ist</h2>
+      <div class="short">
+        <p>Ein Flughafen hat sehr viele <b>versiegelte Flächen</b>. Versiegelt heißt: Der Boden ist mit Asphalt oder Beton bedeckt.</p>
+        <p>Dort kann Regen kaum in den Boden gelangen.</p>
+        <p>Für einen Flughafen war das wichtig: Regenwasser musste schnell von den Start- und Landebahnen verschwinden.</p>
+        <p>Ein Stadtquartier braucht etwas anderes. Bäume brauchen Wasser. Grünflächen brauchen Wasser. An heißen Tagen kühlt Verdunstung die Umgebung. Und ein Teil des Regens kann langsam in den Boden sickern. <span class="kind">◇ Erklärung</span></p>
+      </div>
+      <p class="statement">Was passiert mit Regenwasser, wenn aus einem Flughafen ein Stadtquartier wird?</p>
+    </div>
+  </div>
+</section>
+
+<!-- before / today / future -->
+<section class="ch mood-asphalt">
+  <div class="wide">
+    <div class="inner" style="margin:0">
+      <div class="kicker">Kapitel 2 · Früher und heute</div>
+      <h2>Dieselbe Fläche, eine neue Aufgabe</h2>
+      <p>Ziehe den Regler: links die Bahn im Flugbetrieb 2015, rechts die stillgelegte Landebahn 2022.</p>
+    </div>
+    <div class="compare" id="compare" style="--pos:50%">
+      <img src="img/runway-2015.jpg" alt="Landebahn 2015" loading="lazy">
+      <img class="after" src="img/landebahn-2022.jpg" alt="Landebahn 2022" loading="lazy">
+      <span class="tag l">Früher · 2015 · Foto</span><span class="tag r">Nach der Schließung · 2022 · Foto</span>
+      <div class="bar"></div><div class="knob">⇆</div>
+      <input type="range" id="compare-range" min="0" max="100" value="50">
+    </div>
+    <p style="font-size:.8rem;color:var(--muted)">Links: Foto Orderinchaos, 2015 (<a href="https://commons.wikimedia.org/wiki/File:Berlin_Tegel_runway_2015.jpg" target="_blank" rel="noopener">Commons</a>, CC BY-SA 4.0). Rechts: „Landebahn Süd vom Flughafen Tegel TXL“, Foto Dirk1981, 3.9.2022 (<a href="https://commons.wikimedia.org/wiki/File:Flughafen_TXL_Landebahn_S%C3%BCd.jpg" target="_blank" rel="noopener">Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>). Beide verkleinert. Die Fotos zeigen nicht exakt denselben Ausschnitt.</p>
+
+    <div class="two">
+      <div class="panel">
+        <span class="label-tag">Illustration des Prinzips – keine offizielle Planung</span>
+        <div id="future-illu"></div>
+        <p style="font-size:.95rem">So ungefähr sieht die Idee aus: weniger Asphalt, mehr Grün, Wasser bleibt im Gebiet. <b>Das ist eine eigene, stark vereinfachte Zeichnung</b> – kein Bild der geplanten Gebäude.</p>
+        <p class="src">Eigene Illustration. Offizielle Visualisierungen des Schumacher Quartiers zeigt die Projektseite <a href="https://schumacher-quartier.de/" target="_blank" rel="noopener">schumacher-quartier.de</a>; ihre Bilder sind urheberrechtlich geschützt und werden hier deshalb nicht gezeigt.</p>
+      </div>
+      <figure class="panel">
+        <img src="img/terminal-a-2022.jpg" alt="Terminal A, 2022" loading="lazy" width="1600" height="900">
+        <figcaption><b>Terminal A, September 2022.</b> Nach dem Ende des Flugbetriebs. Foto: Dirk1981, 3.9.2022. <a href="https://commons.wikimedia.org/wiki/File:Flughafen_TXL_Terminal_A.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>, verkleinert.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- sponge city -->
+<section class="ch mood-green">
+  <div class="inner">
+    <div class="kicker">Kapitel 3 · Die Idee</div>
+    <h2>Kann eine Stadt wie ein Schwamm funktionieren?</h2>
+    <div class="short">
+      <p>Ein Schwamm nimmt Wasser auf und gibt es langsam wieder ab. Eine <b>Schwammstadt</b> versucht etwas Ähnliches.</p>
+      <p>Regen soll nicht sofort in der Kanalisation verschwinden. Er soll möglichst lange dort bleiben, wo er fällt.<a class="ref" data-ref="8">[8]</a></p>
+    </div>
+    <div class="flows">
+      <div class="flow grey" id="flow-grey"><h3>Versiegelte Fläche</h3></div>
+      <div class="flow green" id="flow-green"><h3>Schwammstadt</h3></div>
+    </div>
+    <p class="src">Eigene Grafik. Prinzip nach Projektseite „Wassernutzung“ des Schumacher Quartiers<a class="ref" data-ref="8">[8]</a>.</p>
+  </div>
+</section>
+
+<!-- tegel today -->
+<section class="ch mood-green">
+  <div class="wide">
+    <div class="inner" style="margin:0">
+      <div class="kicker">Kapitel 4 · Das neue Tegel</div>
+      <h2>Warum diese Idee für Tegel interessant ist</h2>
+      <span class="stand">Stand der Projektangaben: September 2026 · Planungen können sich ändern</span>
+      <p>Wo früher vor allem Flugzeuge Platz brauchten, sollen künftig Menschen wohnen, arbeiten und forschen. Gleichzeitig soll Regenwasser stärker als Ressource genutzt werden.<a class="ref" data-ref="6">[6]</a><a class="ref" data-ref="8">[8]</a></p>
+    </div>
+    <div class="tile-row">
+      <div class="tile"><span class="v">500 ha</span><span class="l">Gesamtfläche des ehemaligen Flughafens – etwa so groß wie 700 Fußballfelder<a class="ref" data-ref="6">[6]</a> <span class="kind">↗ Extern</span></span></div>
+      <div class="tile"><span class="v">5.000+</span><span class="l">geplante Wohnungen im Schumacher Quartier (46 ha)<a class="ref" data-ref="5">[5]</a> <span class="kind">▢ Planung</span></span></div>
+      <div class="tile"><span class="v">10.000+</span><span class="l">Menschen sollen dort einmal wohnen<a class="ref" data-ref="5">[5]</a> <span class="kind">▢ Planung</span></span></div>
+      <div class="tile"><span class="v">327</span><span class="l">Wohnungen im ersten Bauprojekt, vorgestellt am 3. September 2026<a class="ref" data-ref="7">[7]</a> <span class="kind">↗ Extern</span></span></div>
+    </div>
+    <p style="font-size:.8rem;color:var(--muted)">„700 Fußballfelder“: eigene Umrechnung mit einem Spielfeld von ca. 0,7 ha (105 × 68 m).</p>
+    <div class="two">
+      <div class="short">
+        <h3>Drei Bausteine auf dem Gelände</h3>
+        <p><b>Urban Tech Republic:</b> ein Forschungs- und Industriepark für Technik rund um die Stadt.<a class="ref" data-ref="6">[6]</a></p>
+        <p><b>Schumacher Quartier:</b> ein neues Wohnviertel, geplant nach dem Schwammstadt-Prinzip.<a class="ref" data-ref="5">[5]</a></p>
+        <p><b>Landschaftsraum:</b> große Grünflächen, entwickelt von Grün Berlin.<a class="ref" data-ref="6">[6]</a></p>
+        <p><b>Schon im Test:</b> Seit dem 9. Juli 2025 gibt es auf dem Gelände eine 450 m² große Versuchsanlage mit Verdunstungsbeeten.<a class="ref" data-ref="9">[9]</a></p>
+      </div>
+      <figure>
+        <img src="img/terminal-2005.jpg" alt="Terminal A, 2005" loading="lazy" width="1024" height="768">
+        <figcaption><b>Terminal und Vorfeld im Flugbetrieb, 2005.</b> Viel Fläche ist versiegelt. Foto: Tim Pritlove, 18.6.2005. <a href="https://commons.wikimedia.org/wiki/File:Berlin-Tegel_from_the_air.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by/2.0/deed.de" target="_blank" rel="noopener">CC BY 2.0</a>.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- transition -->
+<section class="ch mood-water" id="daten">
+  <div class="inner">
+    <div class="kicker">Kapitel 5 · Unter der Erde</div>
+    <p class="statement">Aber reagiert das Grundwasser in Tegel überhaupt auf Regen?</p>
+    <div class="short">
+      <p>Um das zu untersuchen, schauen wir unter die Erde.</p>
+      <p>Wir haben die täglichen Niederschlagswerte<a class="ref" data-ref="1">[1]</a> mit den Daten von acht Grundwassermessstellen<a class="ref" data-ref="2">[2]</a><a class="ref" data-ref="3">[3]</a> rund um Berlin-Tegel verglichen. Zeitraum: 1. März 2025 bis 22. September 2026.</p>
+    </div>
+  </div>
+</section>
+
+<!-- map -->
+<section class="ch mood-water">
+  <div class="wide">
+    <div class="inner" style="margin:0">
+      <h2>Wo wird gemessen?</h2>
+      <p>Jeder Punkt ist eine Grundwassermessstelle. Tippe einen Punkt an. Mit dem Regler wählst du einen Tag.</p>
+    </div>
+    <div class="panel">
+      <div id="map"></div>
+      <div class="slider-row">
+        <label for="map-day">Tag: <span class="d" id="map-date"></span></label>
+        <input type="range" id="map-day" min="0" max="570" value="570">
+      </div>
+      <div class="legend">
+        <span>Zahl im Punkt = Änderung seit 01.03.2025 in Metern:</span>
+        <span><i style="background:var(--dry)"></i>gesunken (−)</span><span><i style="background:var(--gw)"></i>gestiegen (+)</span>
+        <span><i class="sq" style="background:var(--asphalt)"></i>ehem. Start-/Landebahnen</span><span><i class="sq" style="background:var(--rain-soft)"></i>Gewässer</span>
+      </div>
+      <div class="station-btns" id="station-btns"></div>
+      <p class="src">Grundwassermessstellen: eigene Darstellung auf Basis von „Karte mit Grundwasserpegel.csv“<a class="ref" data-ref="3">[3]</a> (Lage) und „Grundwasser je messstation im zeitverlauf.csv“<a class="ref" data-ref="2">[2]</a> (Pegel, Verlauf). Kartendaten: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, ODbL, Datenstand 01.06.2026<a class="ref" data-ref="16">[16]</a>. Darstellung: Leaflet 1.9.4. Keine Hintergrundkacheln.</p>
+    </div>
+  </div>
+</section>
+
+<!-- groundwater -->
+<section class="ch mood-water">
+  <div class="inner">
+    <div class="kicker">Kurz erklärt</div>
+    <h2>Was ist Grundwasser?</h2>
+    <div class="soil" id="soil"></div>
+    <div class="short">
+      <p><b>Grundwasser</b> ist Wasser unter der Erdoberfläche, im Boden und in Gesteinsschichten. Es entsteht, wenn Regen versickert.<a class="ref" data-ref="15">[15]</a></p>
+      <p>Aber nicht jeder Regentropfen kommt dort an. Ein Teil verdunstet, ein Teil wird von Pflanzen aufgenommen, ein Teil fließt oben ab.<a class="ref" data-ref="13">[13]</a> Ein Teil bleibt erst im Boden. Nur der Rest sickert tiefer. <span class="kind">◇ Erklärung</span></p>
+      <p>Die Messstellen messen, wie hoch das Grundwasser steht – in Metern, jeden Tag.<a class="ref" data-ref="2">[2]</a></p>
+    </div>
+    <p class="src">Eigene Illustration, stark vereinfacht.</p>
+  </div>
+</section>
+
+<!-- dry spring -->
+<section class="ch mood-dry">
+  <div class="inner">
+    <div class="kicker">Kapitel 6 · Frühjahr 2025</div>
+    <h2>Es regnet kaum</h2>
+    <div class="tile-row">
+      <div class="tile"><span class="l">März 2025</span><span class="v">5,6 mm<button class="info" data-info="r56">ⓘ</button></span></div>
+      <div class="tile"><span class="l">April 2025</span><span class="v">12,2 mm<button class="info" data-info="r122">ⓘ</button></span></div>
+    </div>
+    <p>Zusammen:</p>
+    <p class="big" style="color:var(--dry)">17,8<small> mm</small><button class="info" data-info="r178">ⓘ</button></p>
+    <p class="statement" style="font-size:clamp(1.3rem,4.5vw,1.9rem)">Nur 17,8 mm Regen in zwei Monaten.<a class="ref" data-ref="1">[1]</a></p>
+    <div class="panel">
+      <p><b>1 mm Regen = 1 Liter Wasser auf 1 Quadratmeter.</b><a class="ref" data-ref="13">[13]</a></p>
+      <p>17,8 mm heißt also: In zwei Monaten fallen auf einen Quadratmeter nur knapp zwei Eimer Wasser. <span class="kind">∑ Berechnung</span></p>
+      <div class="buckets" id="buckets-dry"></div>
+      <p style="font-size:.85rem;color:var(--muted)">Ein Eimer = 10 Liter. 17,8 Liter ≈ 1,8 Eimer.</p>
+    </div>
+    <p>Gleichzeitig sinkt das Grundwasser:</p>
+    <p class="big" style="color:var(--dry)">−0,18<small> m</small><button class="info" data-info="g18">ⓘ</button></p>
+    <p>Über die acht Messstellen sinkt der Grundwasserstand zwischen Anfang März und Ende April im <b>Median</b> um ungefähr 0,18 Meter.<a class="ref" data-ref="2">[2]</a> <span class="kind">≈ Statistik</span></p>
+    <p class="caveat blue"><b>Median?</b> Der Median ist ein typischer Wert aus der Mitte aller acht Messstellen. Eine besonders extreme Messstelle beeinflusst ihn nicht so stark.</p>
+    <p class="statement">Wenig Regen – sinkende Grundwasserstände</p>
+    <p class="caveat">Das bedeutet nicht, dass Regen der einzige Grund für die Veränderung ist.</p>
+  </div>
+</section>
+
+<!-- differences -->
+<section class="ch mood-dry">
+  <div class="inner">
+    <h2>Grundwasser verhält sich nicht überall gleich</h2>
+    <p>Veränderung im trockenen Frühjahr (01.03.–30.04.2025), je Messstelle:</p>
+    <div class="panel">
+      <div class="chart" id="bars-spring"></div>
+      <p class="src">Quelle: Eigene Auswertung auf Basis von „Grundwasser je messstation im zeitverlauf.csv“<a class="ref" data-ref="2">[2]</a>. Letzter minus erster Messwert im Zeitraum.</p>
+    </div>
+    <div class="short">
+      <p>Einige Messstellen verlieren ungefähr <b>0,06 bis 0,12 m</b>. Andere mehr als <b>0,20 oder 0,40 m</b>. Die Messstelle <code>gwm32-22-op</code> sinkt um über einen Meter.<a class="ref" data-ref="2">[2]</a> <span class="kind">● Messwert</span></p>
+      <p class="caveat">Warum einzelne Messstellen stärker reagieren, lässt sich aus diesen Daten allein nicht sicher erklären. Boden, Lage und weitere hydrologische Bedingungen können eine Rolle spielen. <span class="kind">◇ Interpretation</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- rain -->
+<section class="ch mood-water">
+  <div class="inner">
+    <div class="kicker">Kapitel 7 · Sommer 2025</div>
+    <h2>Plötzlich wird es nass</h2>
+    <div class="tile-row">
+      <div class="tile"><span class="l">Mai 2025</span><span class="v">32,6 mm</span></div>
+      <div class="tile"><span class="l">Juni 2025</span><span class="v">34,4 mm</span></div>
+      <div class="tile hot"><span class="l">Juli 2025</span><span class="v">118 mm<button class="info" data-info="r118" style="color:inherit">ⓘ</button></span></div>
+    </div>
+    <p class="src" style="border:0;padding:0">Monatssummen, eigene Berechnung aus Tageswerten<a class="ref" data-ref="1">[1]</a>.</p>
+    <div class="panel" style="background:var(--rain);color:#fff">
+      <p class="kicker" style="color:#dbe9f7">Juli 2025, Tag für Tag</p>
+      <div class="chart" id="july"></div>
+      <p style="font-size:.85rem;color:#e3eefa">Tippe einen Balken an für den genauen Wert.</p>
+    </div>
+    <div class="tile-row">
+      <div class="tile"><span class="l">10. bis 23. Juli</span><span class="v">100,6 mm<button class="info" data-info="r1006">ⓘ</button></span><span class="l">in 14 Tagen</span></div>
+      <div class="tile"><span class="l">17. bis 23. Juli</span><span class="v">58,4 mm<button class="info" data-info="r584">ⓘ</button></span><span class="l">in 7 Tagen</span></div>
+    </div>
+    <p>Die stärksten Tage: <b>21. Juli 23,0 mm</b>, <b>22. Juli 14,3 mm</b>, <b>23. Juli 12,3 mm</b>.<a class="ref" data-ref="1">[1]</a> <span class="kind">● Messwert</span></p>
+    <p class="src" style="border:0;padding:0">Quelle: „__RAINFILE__“<a class="ref" data-ref="1">[1]</a>.</p>
+  </div>
+</section>
+
+<!-- barrels -->
+<section class="ch mood-water">
+  <div class="inner">
+    <h2>Zwei Regentonnen</h2>
+    <div class="barrels" id="barrels"></div>
+    <p class="statement">In diesen 30 Sommertagen fällt mehr als siebenmal so viel Regen wie im März und April zusammen.<a class="ref" data-ref="1">[1]</a></p>
+    <p style="font-size:.9rem;color:var(--ink-2)">17,8 mm (März + April 2025)<button class="info" data-info="r178">ⓘ</button> gegenüber 131,6 mm (7. Juli – 5. August 2025)<button class="info" data-info="r1316">ⓘ</button>. 131,6 ÷ 17,8 ≈ 7,4. <span class="kind">∑ Berechnung</span></p>
+  </div>
+</section>
+
+<!-- scrolly -->
+<section class="ch mood-water" id="scrolly-sec">
+  <div class="wide">
+    <div class="inner" style="margin:0">
+      <div class="kicker">Kapitel 8 · Die Reaktion</div>
+      <h2>Der Regen kommt zuerst. Das Grundwasser folgt später.</h2>
+    </div>
+    <div class="scrolly">
+      <div class="sticky">
+        <div class="panel">
+          <div class="chart" id="sc-rain"></div>
+          <div class="chart" id="sc-gw"></div>
+          <div class="legend"><span><i class="sq" style="background:var(--rain)"></i>Regen pro Tag (mm)</span><span><i style="background:var(--gw)"></i>Grundwasser, Median (m)</span><span><i style="background:var(--gw-soft)"></i>einzelne Messstellen</span></div>
+          <p class="src">Quelle: Eigene Auswertung auf Basis von „__RAINFILE__“<a class="ref" data-ref="1">[1]</a> und „Grundwasser je messstation im zeitverlauf.csv“<a class="ref" data-ref="2">[2]</a>. Grundwasser: Änderung seit 01.03.2025.</p>
+        </div>
+      </div>
+      <div class="steps" id="steps">
+        <div class="stepcard dry" data-step="1"><b>1 · Trocken</b><p>März und April 2025: kaum Regen. Die Grundwasserlinien fallen.</p></div>
+        <div class="stepcard" data-step="2"><b>2 · Starker Regen</b><p>Juli 2025: viele hohe Regenbalken hintereinander.</p></div>
+        <div class="stepcard gw" data-step="3"><b>3 · Das Grundwasser steigt – später</b><p>Zwischen 10. Juli und 20. August 2025 steigt das Grundwasser im Median um ungefähr <b>0,09 m</b>.<button class="info" data-info="g87">ⓘ</button><a class="ref" data-ref="2">[2]</a></p><p style="font-size:.9rem;color:var(--ink-2)">Nicht jeder Regentag lässt das Grundwasser sofort steigen. Die Reaktion zeigt sich über Wochen. <span class="kind">◇ Interpretation</span></p></div>
+        <div class="stepcard" data-step="0"><b>Der ganze Zeitraum</b><p>Nach nassen Phasen steigen viele Messstellen wieder. Aber nicht sofort und nicht überall gleich.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- delay -->
+<section class="ch mood-water">
+  <div class="inner">
+    <h2>Warum gibt es eine Verzögerung?</h2>
+    <div class="delay">
+      <div class="drop"></div>
+      <div class="st"><b>Regen fällt heute.</b></div>
+      <div class="st"><b>Das Wasser gelangt in den Boden.</b></div>
+      <div class="st"><b>Ein Teil wird von Pflanzen aufgenommen.</b></div>
+      <div class="st"><b>Ein Teil verdunstet.</b></div>
+      <div class="st"><b>Ein Teil gelangt langsam tiefer.</b></div>
+      <div class="st"><b>Erst später kann sich das Grundwasser verändern.</b></div>
+    </div>
+    <p class="statement" style="font-size:clamp(1.3rem,4.5vw,1.9rem)">Regen fällt in Minuten oder Stunden. Der Weg durch den Boden kann deutlich länger dauern.</p>
+    <div class="panel">
+      <p><b>Was sagt die Statistik?</b> Wir haben verglichen: Regen in 30 Tagen und die Grundwasseränderung, um 0 bis 42 Tage verschoben. Der Zusammenhang ist am deutlichsten nach <b>etwa ein bis zwei Wochen</b>.<button class="info" data-info="lag">ⓘ</button><a class="ref" data-ref="1">[1]</a><a class="ref" data-ref="2">[2]</a> <span class="kind">≈ Statistik</span></p>
+      <div class="chart" id="lag"></div>
+      <p class="src">Quelle: Eigene statistische Auswertung (Pearson-Korrelation), Daten [1] und [2]. Höhere Linie = engerer Zusammenhang. Methode: siehe Methodik.</p>
+    </div>
+    <p class="caveat blue"><b>Das ist keine feste 14-Tage-Regel.</b> Die Daten zeigen nur, dass Regen und spätere Veränderungen des Grundwassers zeitversetzt zusammenpassen. Sie beweisen nicht, dass jeder Regentropfen genau zwei Wochen braucht. Eine Korrelation beweist keine Ursache.</p>
+  </div>
+</section>
+
+<!-- 19 april -->
+<section class="ch mood-water">
+  <div class="inner">
+    <div class="kicker">Kapitel 9 · Frühjahr 2026</div>
+    <h2>19. April 2026: ein außergewöhnlicher Regentag</h2>
+    <p class="big" style="color:var(--rain)">40,7<small> mm</small><button class="info" data-info="r407">ⓘ</button></p>
+    <p><b>an einem Tag.</b> Das ist der höchste Tageswert im ausgewerteten Datensatz.<a class="ref" data-ref="1">[1]</a> <span class="kind">● Messwert</span></p>
+    <div class="panel">
+      <div class="chart" id="apr-vs-mar"></div>
+      <p class="statement" style="font-size:clamp(1.2rem,4vw,1.6rem)">An einem Tag fällt mehr als dreimal so viel Regen wie im ganzen März 2026 (12,9 mm).</p>
+      <p class="src">Quelle: Eigene Auswertung, „__RAINFILE__“<a class="ref" data-ref="1">[1]</a>. 40,7 ÷ 12,9 ≈ 3,2.</p>
+    </div>
+    <div class="tile-row">
+      <div class="tile"><span class="l">April 2026</span><span class="v">52,6 mm</span></div>
+      <div class="tile"><span class="l">Mai 2026</span><span class="v">36,5 mm</span></div>
+      <div class="tile"><span class="l">Juni 2026</span><span class="v">36,0 mm</span></div>
+    </div>
+    <p>Vom 19. April bis 19. Juni 2026 zusammen: <b class="num">ungefähr 101 mm</b><button class="info" data-info="r101">ⓘ</button><a class="ref" data-ref="1">[1]</a></p>
+  </div>
+</section>
+
+<!-- rising again -->
+<section class="ch mood-water">
+  <div class="inner">
+    <h2>Wieder reagiert das Grundwasser</h2>
+    <p>Im gleichen Zeitraum (19.04.–19.06.2026) steigt das Grundwasser im Median um ungefähr</p>
+    <p class="big" style="color:var(--gw)">+0,07<small> m</small><button class="info" data-info="g7">ⓘ</button></p>
+    <p>Nicht alle Messstellen reagieren gleich:<a class="ref" data-ref="2">[2]</a></p>
+    <div class="panel">
+      <div class="chart" id="bars-2026"></div>
+      <p class="src">Quelle: Eigene Auswertung auf Basis von „Grundwasser je messstation im zeitverlauf.csv“<a class="ref" data-ref="2">[2]</a>. Wert am 19.06. minus Wert am 19.04.2026.</p>
+    </div>
+    <div class="panel">
+      <h3>Beispiel: <code>gwm32-22-op</code></h3>
+      <p>Diese Messstelle schwankt besonders stark. Zwischen ihrem höchsten und tiefsten Wert liegen ungefähr <b>2,1 Meter</b>.<button class="info" data-info="range32">ⓘ</button></p>
+      <div class="chart" id="spark32"></div>
+      <p class="caveat">Warum diese Messstelle so stark schwankt, zeigen die Daten nicht. Wir stellen hier keine Vermutung als Tatsache dar.</p>
+      <p class="src">Quelle: Eigene Auswertung, „Grundwasser je messstation im zeitverlauf.csv“<a class="ref" data-ref="2">[2]</a>. Pegel in m laut Datensatz.</p>
+    </div>
+  </div>
+</section>
+
+<!-- overall -->
+<section class="ch mood-dry">
+  <div class="inner">
+    <div class="kicker">Kapitel 10 · Die Bilanz</div>
+    <h2>Regen hilft. Aber er setzt die Uhr nicht einfach zurück.</h2>
+    <p>Vergleich: Anfang März 2025 gegen 22. September 2026.</p>
+    <p class="big" style="color:var(--dry)">−0,43<small> m</small><button class="info" data-info="g425">ⓘ</button></p>
+    <p><b>Alle acht</b> Messstellen liegen am Ende niedriger als zu Beginn.<a class="ref" data-ref="2">[2]</a> Typische Veränderung (Median): −0,43 m (genau −0,425 m). <span class="kind">≈ Statistik</span></p>
+    <div class="panel">
+      <div class="chart" id="bars-total"></div>
+      <p class="src">Quelle: Eigene Auswertung auf Basis von „Grundwasser je messstation im zeitverlauf.csv“<a class="ref" data-ref="2">[2]</a>. Wert am 22.09.2026 minus Wert am 01.03.2025.</p>
+    </div>
+    <p>Zwischendurch steigt das Grundwasser nach regenreichen Zeiten wieder. Trotzdem liegt es am Ende an allen acht Messstellen unter dem Niveau von Anfang März 2025.</p>
+    <p class="caveat"><b>Das bedeutet nicht, dass allein der Niederschlag dafür verantwortlich ist.</b> In Berlin hängt der Grundwasserstand von Niederschlag, Verdunstung und unterirdischen Abflüssen ab – und auch von Grundwasserentnahmen, Bebauung, Versiegelung, Entwässerung und Wiedereinleitungen.<a class="ref" data-ref="14">[14]</a> Auch Pflanzen und der Boden spielen eine Rolle. <span class="kind">↗ Extern</span></p>
+  </div>
+</section>
+
+<!-- back to tegel -->
+<section class="ch mood-green">
+  <div class="inner">
+    <div class="kicker">Kapitel 11 · Zurück nach Tegel</div>
+    <h2>Und was bedeutet das für das neue Tegel?</h2>
+    <p>Die Messdaten zeigen drei Dinge:</p>
+    <ol class="short" style="padding-left:1.2em;margin:0">
+      <li>Trockenperioden sind im Grundwasser sichtbar.</li>
+      <li>Nach starken Regenphasen können die Pegel wieder steigen.</li>
+      <li>Doch die Reaktion kommt verzögert und ist von Ort zu Ort verschieden.</li>
+    </ol>
+    <p><span class="kind">◇ Interpretation</span> auf Grundlage der Auswertung von [1] und [2].</p>
+    <p class="statement">Genau deshalb ist wichtig, wie der künftige Stadtteil mit Regenwasser umgeht.</p>
+  </div>
+</section>
+
+<!-- old vs new drainage -->
+<section class="ch mood-green">
+  <div class="wide">
+    <p class="big" style="font-size:clamp(2.2rem,9vw,5rem);line-height:1.02"><span style="color:var(--asphalt)">Früher musste Regen weg.</span><br><span style="color:var(--green)">In Zukunft soll er möglichst im Gebiet bleiben.</span></p>
+    <div class="two">
+      <div class="panel" style="background:var(--asphalt-bg)">
+        <h3>Flughafen</h3>
+        <p>Regen soll möglichst schnell von Startbahn und Rollfeld verschwinden. <span class="kind">◇ Erklärung</span></p>
+      </div>
+      <div class="panel" style="background:var(--card)">
+        <h3 style="color:var(--green)">Künftiges Stadtquartier</h3>
+        <p>Regen soll möglichst <b>gespeichert, genutzt, verdunstet und versickert</b> werden.<a class="ref" data-ref="8">[8]</a><a class="ref" data-ref="11">[11]</a> <span class="kind">▢ Planung</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- projects -->
+<section class="ch mood-green">
+  <div class="wide">
+    <div class="inner" style="margin:0">
+      <h2>Schwammstadt-Projekte in Tegel</h2>
+      <span class="stand">Stand: September 2026</span>
+      <p style="font-size:.95rem;color:var(--ink-2)">Freie Fotos dieser Projekte haben wir nicht gefunden. Die Bilder auf den Projektseiten sind urheberrechtlich geschützt. Die Links führen zu den Originalseiten mit Fotos.</p>
+    </div>
+    <div class="projects">
+      <div class="proj"><span class="kicker">Seit Juli 2025</span><h3>Verdunstungsbeete</h3><p>450 m² Versuchsanlage. Pflanzen bekommen Regenwasser, das Wasser verdunstet und kühlt. Partner: Berliner Wasserbetriebe, TU Berlin, Berliner Hochschule für Technik.<a class="ref" data-ref="9">[9]</a></p><a class="go" href="https://tegelprojekt.de/gemeinsam-gegen-hitze-in-der-stadt-forschung-und-wasserwirtschaft-eroeffnen-verdunstungsbeet-anlage-in-berlin-txl/" target="_blank" rel="noopener">Zur Projektseite ↗</a></div>
+      <div class="proj"><span class="kicker">Seit März 2025</span><h3>Digitaler Zwilling für Regenwasser</h3><p>Regenwasser wird auf dem Gelände gespeichert und gereinigt. Sensoren sollen helfen, Starkregen früh zu erkennen.<a class="ref" data-ref="10">[10]</a></p><a class="go" href="https://urbantechrepublic.de/digitaler-zwilling-regenwasser-einbau-sensoren/" target="_blank" rel="noopener">Zur Projektseite ↗</a></div>
+      <div class="proj"><span class="kicker">Planung</span><h3>Regenwasser in der Urban Tech Republic</h3><p>Versickerung, Rückhaltebecken, Bodenfilter und eine Steuerung, die mit Vorhersagen arbeitet.<a class="ref" data-ref="11">[11]</a></p><a class="go" href="https://regenwasseragentur.berlin/inspirieren-lassen/projektdatenbank/urban-tech-republic/" target="_blank" rel="noopener">Zur Projektseite ↗</a></div>
+      <div class="proj"><span class="kicker">Planung</span><h3>Schwammstadt im Schumacher Quartier</h3><p>Begrünte Dächer, Fassaden, Beete und Flächen sollen Wasser aufnehmen und bei Trockenheit an Pflanzen abgeben.<a class="ref" data-ref="8">[8]</a></p><a class="go" href="https://schumacher-quartier.de/wassernutzung/" target="_blank" rel="noopener">Zur Projektseite ↗</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- timeline -->
+<section class="ch mood-green">
+  <div class="inner">
+    <h2>Die spannendste Frage können wir heute noch nicht beantworten.</h2>
+    <div class="short">
+      <p>Die Daten von 2025 und 2026 zeigen, wie Regen und Grundwasser in einer frühen Phase der Entwicklung von Tegel zusammenhängen.</p>
+      <p>Viele Gebäude und geplante Wassersysteme sind noch nicht fertig. Deshalb können die Daten noch nicht zeigen, ob die Schwammstadt funktioniert.</p>
+      <p><b>Aber genau deshalb sind diese Messungen wertvoll.</b></p>
+    </div>
+    <ol class="tl">
+      <li><span class="y">2025</span><span>Messung des heutigen Zustands: Regen und Grundwasser, Tag für Tag.<a class="ref" data-ref="1">[1]</a><a class="ref" data-ref="2">[2]</a></span></li>
+      <li><span class="y">2026</span><span>Weitere Entwicklung. Am 3. September 2026 wird das erste Wohnungsbauprojekt im Schumacher Quartier vorgestellt.<a class="ref" data-ref="7">[7]</a></span></li>
+      <li><span class="y">Zukunft</span><span>Neue Gebäude, Grünflächen und Regenwassersysteme. <span class="kind">▢ Planung</span></span></li>
+      <li><span class="y now">Später</span><span><b>Vergleich:</b> Wie hat sich der Wasserhaushalt verändert?</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- end -->
+<section class="closing">
+  <img src="img/aerial-2019-see.jpg" alt="Tegel aus dem Flugzeug, 2019" loading="lazy" width="1600" height="1200">
+  <div class="txt">
+    <p class="statement">Die entscheidende Frage ist nicht nur, wie viel Regen fällt.</p>
+    <div style="display:grid;gap:22px">
+      <p class="statement">Sondern was mit dem Wasser passiert, nachdem es gefallen ist.</p>
+      <div class="short" style="font-size:1.05rem;color:#e3ebef;max-width:60ch">
+        <p>Berlin-Tegel verändert sich vom Flughafen zu einem neuen Stadtquartier.</p>
+        <p>Unter unseren Füßen lässt sich schon heute beobachten, wie empfindlich Wasser auf Trockenheit und Regen reagieren kann.</p>
+        <p>Ob das neue Tegel Regen künftig besser speichern und nutzen kann, wird sich erst in den kommenden Jahren zeigen.</p>
+        <p>Die Messdaten von heute können helfen, diese Veränderung sichtbar zu machen.</p>
+      </div>
+      <p class="statement" style="font-size:clamp(1.4rem,4.8vw,2.2rem);color:#9fd8df">Was passiert mit jedem Regentropfen, der in Zukunft auf Berlin-Tegel fällt?</p>
+      <p class="cap">Tegel aus einem startenden Flugzeug, 30.4.2019. Foto: Berlinschneid, 2019. <a href="https://commons.wikimedia.org/wiki/File:Berliner_Flughafen_Tegel_von_oben_02.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>, verkleinert.</p>
+    </div>
+  </div>
+</section>
+
+<!-- method and sources -->
+<section class="ch" id="methodik">
+  <div class="inner method">
+    <div class="kicker">Nachvollziehbarkeit</div>
+    <h2>Methodik</h2>
+    <ul>
+      <li><b>Analysezeitraum:</b> 1. März 2025 bis 22. September 2026.</li>
+      <li><b>Grundwassermessstellen:</b> acht Messstellen aus „Karte mit Grundwasserpegel.csv“<a class="ref" data-ref="3">[3]</a>. Die Zeitreihendatei<a class="ref" data-ref="2">[2]</a> enthält zwei weitere Reihen (gwm1-16, gwm5-95), die nicht in dieser Liste stehen und nicht verwendet wurden.</li>
+      <li><b>Niederschlag:</b> tägliche Werte für einen Rasterpunkt in Tegel (52,5615° N, 13,2822° O)<a class="ref" data-ref="1">[1]</a>, laut Spalte „HYRAS_Version“ aus dem HYRAS-Datensatz des Deutschen Wetterdienstes<a class="ref" data-ref="4">[4]</a>.</li>
+      <li><b>HYRAS-Version:</b> Verwendet werden ausschließlich Werte der Version v6-1 (eine Zeile pro Tag). Die ursprüngliche Rohdatei enthielt für 01.01.2025–03.01.2026 zusätzlich die ältere Version v6.0; diese Zeilen wurden entfernt, damit kein Tag doppelt gezählt wird.</li>
+      <li><b>Änderungen:</b> letzter minus erster verfügbarer Messwert im Zeitraum, in Metern (Messgenauigkeit der Daten: 1 mm). Große Zahlen im Text sind auf 2 Nachkommastellen gerundet, Diagramme und ⓘ zeigen den genauen Wert. Einzelne fehlende Tage werden in Linien überbrückt.</li>
+      <li><b>Median:</b> Für viele Vergleiche wird der Median der acht Messstellen genutzt. Dadurch beeinflusst eine Messstelle mit starken Schwankungen (gwm32-22-op) das Ergebnis weniger als beim Mittelwert.</li>
+      <li><b>Korrelation:</b> Pearson-Korrelation zwischen der 30-Tage-Regensumme und der 30-Tage-Änderung des Grundwassers, verschoben um 0–42 Tage (Lücken bis 5 Tage linear interpoliert); drei Varianten: Mittelwert der Messstellen, Median der Messstellen, je Messstelle einzeln. Die Analyse prüft, ob Regenmengen und spätere Veränderungen des Grundwassers statistisch zusammen auftreten. <b>Eine Korrelation beweist keine Ursache-Wirkungs-Beziehung.</b></li>
+      <li><b>Karte:</b> Leaflet 1.9.4 mit Vektordaten aus OpenStreetMap (Overpass-API, Datenstand 01.06.2026)<a class="ref" data-ref="16">[16]</a>; keine Hintergrundkacheln.</li>
+      <li><b>Werkzeuge:</b> Python (pandas) für die Auswertung; Diagramme als eigenes SVG.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="ch" id="quellen" style="padding-top:0">
+  <div class="inner">
+    <div class="kicker">Quellen &amp; Daten</div>
+    <h2>Quellenverzeichnis</h2>
+    <p style="font-size:.9rem;color:var(--ink-2)">Alle Links wurden am 23.09.2026 aufgerufen.</p>
+    <div class="biblio">
+      <div><h3>Datengrundlage</h3><ol id="bib-data"></ol></div>
+      <div><h3>Externe Quellen</h3><ol id="bib-ext"></ol></div>
+      <div><h3>Bildnachweis</h3><ol id="bib-img"></ol></div>
+    </div>
+  </div>
+</section>
+
+<div class="tip" id="tip" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const D = __DATA__;
+const GEO = __GEO__;
+const N = D.rain.length;
+const START = Date.UTC(2025, 2, 1);
+const dayDate = i => new Date(START + i * 864e5);
+const fmtD = i => dayDate(i).toLocaleDateString("de-DE", {day:"2-digit", month:"2-digit", year:"numeric", timeZone:"UTC"});
+const idxOf = s => Math.round((Date.parse(s + "T00:00:00Z") - START) / 864e5);
+// round half up, e.g. 8.65 -> 8.7 (float is sometimes a bit below)
+const roundTo = (v, d) => { const f = 10 ** d; return Math.round(v * f + Math.sign(v) * 1e-9) / f; };
+const nf = (v, d=1) => v == null ? "-" : roundTo(v, d).toLocaleString("de-DE", {minimumFractionDigits:d, maximumFractionDigits:d});
+const sg = (v, d=1) => v == null ? "-" : (v > 0 ? "+" : v < 0 ? "-" : "") + nf(Math.abs(v), d);
+const IDS = D.stations.map(s => s.id);
+const COL = IDS.map((_, k) => `var(--s${k+1})`);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs={}, parent){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function txt(p, x, y, s, a={}){ const t = el("text", {x, y, ...a}, p); t.textContent = s; return t; }
+function svgFor(host, w, h){ host.innerHTML = ""; return el("svg", {viewBox:`0 0 ${w} ${h}`, width:w, height:h}, host); }
+const ffill = arr => { let last = null; return arr.map(v => (v == null ? last : (last = v))); };
+
+const tip = document.getElementById("tip");
+function showTip(html, ev){ tip.innerHTML = html; tip.hidden = false; const r = tip.getBoundingClientRect(); let x = ev.clientX + 14, y = ev.clientY + 14; if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - 14; if (y + r.height > innerHeight - 8) y = ev.clientY - r.height - 14; tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px"; }
+function hideTip(){ tip.hidden = true; }
+function hoverable(node, html){ node.style.cursor = "pointer"; node.addEventListener("pointermove", e => showTip(html(), e)); node.addEventListener("pointerleave", hideTip); node.addEventListener("click", e => { e.stopPropagation(); showTip(html(), e); }); }
+document.addEventListener("click", () => hideTip()); addEventListener("scroll", hideTip, {passive:true});
+
+const ABRUF = "23.09.2026";
+const SOURCES = {
+  1:{g:"data", title:"__RAINFILE__", pub:"Bereitgestellter Datensatz (laut Spalte 'HYRAS_Version' Rasterwerte aus HYRAS des DWD, siehe [4])", use:"Tägliche Niederschlagswerte für Berlin-Tegel (Rasterpunkt 52,5615° N, 13,2822° O). Analysezeitraum März 2025 bis September 2026.", note:"Enthält nur HYRAS-Version v6-1, ein Wert pro Tag. Die ursprüngliche Rohdatei enthielt für 01.01.2025-03.01.2026 zusätzlich v6.0; diese Doppelungen wurden entfernt."},
+  2:{g:"data", title:"Grundwasser je messstation im zeitverlauf.csv", pub:"Bereitgestellter Datensatz", use:"Zeitliche Entwicklung der Grundwasserstände (m, Tageswerte) an den untersuchten Messstellen.", note:"Verwendet werden die acht Messstellen aus [3]."},
+  3:{g:"data", title:"Karte mit Grundwasserpegel.csv", pub:"Bereitgestellter Datensatz", use:"Standorte (Breiten-/Längengrad) und Wasserpegel der acht Grundwassermessstellen im Untersuchungsgebiet Berlin-Tegel."},
+  4:{a:"Deutscher Wetterdienst (DWD)", title:"Hydrometeorologischer Rasterdatensatz Niederschlag für Deutschland (HYRAS-DE-PR)", site:"dwd.de", date:null, url:"https://www.dwd.de/DE/leistungen/hyras_de_pr/hyras_de_pr.html", use:"Beschreibung des Rasterdatensatzes, aus dem die Niederschlagswerte stammen."},
+  5:{a:"Senatsverwaltung für Stadtentwicklung, Bauen und Wohnen Berlin", title:"Startschuss für Wohnungsbau im Schumacher Quartier", site:"Berlin.de, Pressemitteilung", date:"31.01.2025", url:"https://www.berlin.de/sen/stadt/presse/pressemeldungen/pressemitteilung.1526943.php", use:"46 Hektar, über 5.000 Wohnungen für mehr als 10.000 Menschen, Schwammstadt-Prinzip für die Regenwasserbewirtschaftung."},
+  6:{a:"Berlin TXL Management GmbH", title:"Über uns", site:"tegelprojekt.de", date:null, url:"https://tegelprojekt.de/ueber-uns/", use:"500 ha großes Areal; Urban Tech Republic (Forschungs- und Industriepark), Schumacher Quartier (Wohnviertel), Landschaftsraum (Grün Berlin)."},
+  7:{a:"Berlin TXL Management GmbH (Schumacher Quartier)", title:"Startschuss für die ersten Wohnungen im Schumacher Quartier", site:"schumacher-quartier.de", date:"07.09.2026", url:"https://schumacher-quartier.de/startschuss-fuer-die-ersten-wohnungen-im-schumacher-quartier/", use:"Vorstellung am 3. September 2026: 327 Wohnungen, eine Kita, 15 Gewerbeeinheiten (degewo AG)."},
+  8:{a:"Berlin TXL Management GmbH (Schumacher Quartier)", title:"Wassernutzung", site:"schumacher-quartier.de", date:null, url:"https://schumacher-quartier.de/wassernutzung/", use:"Schwammstadt-Prinzip: Regenwasser bleibt, wo es fällt; begrünte Dächer, Fassaden, Beete; Abgabe an Pflanzen, Verdunstung, Kaskadensystem bei Starkregen."},
+  9:{a:"Berlin TXL Management GmbH", title:"Verdunstungsbeet-Anlage in Berlin TXL eröffnet", site:"tegelprojekt.de", date:"10.07.2025", url:"https://tegelprojekt.de/gemeinsam-gegen-hitze-in-der-stadt-forschung-und-wasserwirtschaft-eroeffnen-verdunstungsbeet-anlage-in-berlin-txl/", use:"Eröffnung am 9. Juli 2025, 450 m², Partner Berliner Wasserbetriebe, TU Berlin, BHT."},
+  10:{a:"Berlin TXL Management GmbH (Urban Tech Republic)", title:"Digitaler Zwilling für Regenwasser: der nächste Schritt", site:"urbantechrepublic.de", date:"22.04.2025", url:"https://urbantechrepublic.de/digitaler-zwilling-regenwasser-einbau-sensoren/", use:"Speicherung und Reinigung von Regenwasser; Pegelsensoren seit 4. März 2025; Früherkennung von Starkregen."},
+  11:{a:"Berliner Regenwasseragentur", title:"Urban Tech Republic", site:"regenwasseragentur.berlin, Projektdatenbank", date:"07.11.2022", url:"https://regenwasseragentur.berlin/inspirieren-lassen/projektdatenbank/urban-tech-republic/", use:"Regenwassernutzung, Versickerung, Regenrückhaltebecken, Bodenfilter, vorhersagebasierte Steuerung."},
+  12:{a:"Bundeswehr (Luftwaffe)", title:"Flughafen Tegel schließt endgültig", site:"bundeswehr.de", date:"05.05.2021", url:"https://www.bundeswehr.de/de/organisation/luftwaffe/aktuelles/flughafen-tegel-schliesst-endgueltig-5070678", use:"Baubeginn 5. August 1948, erste Landung 5. November 1948; letzter Passagierflug November 2020 - also mehr als 70 Jahre Flugbetrieb."},
+  13:{a:"Deutscher Wetterdienst (DWD)", title:"Glossar: Niederschlagshöhe", site:"dwd.de, Wetter- und Klimalexikon", date:null, url:"https://www.dwd.de/DE/service/lexikon/begriffe/N/Niederschlagshoehe.html", use:"1 mm Niederschlagshöhe entspricht 1 Liter pro Quadratmeter; Niederschlag kann abfließen, verdunsten oder versickern."},
+  14:{a:"Senatsverwaltung für Stadtentwicklung Berlin", title:"Umweltatlas 02.07 Flurabstand des Grundwassers (Ausgabe 2008)", site:"berlin.de/umweltatlas", date:"2008", url:"https://www.berlin.de/umweltatlas/_assets/wasser/flurabstand/de-texte/kc207.pdf", use:"Grundwasserstände in Berlin hängen von Niederschlägen, Verdunstung und unterirdischen Abflüssen ab und werden stark durch Grundwasserentnahmen, Bebauung, Versiegelung, Entwässerungsanlagen und Wiedereinleitungen beeinflusst."},
+  15:{a:"Senatsverwaltung für Stadtentwicklung und Umwelt Berlin", title:"Umweltatlas 02.17 Grundwasserneubildung (Ausgabe 2013)", site:"berlin.de/umweltatlas", date:"2013", url:"https://www.berlin.de/umweltatlas/_assets/wasser/grundwasserneubildung/de-texte/kb217.pdf", use:"Grundwasser entsteht durch Versickerung von Niederschlägen."},
+  16:{a:"OpenStreetMap contributors", title:"OpenStreetMap-Kartendaten (Abfrage über Overpass-API)", site:"openstreetmap.org, Lizenz ODbL", date:"Datenstand 01.06.2026", url:"https://www.openstreetmap.org/copyright", use:"Umriss des ehemaligen Flughafens, ehemalige Start- und Landebahnen, Rollwege, Vorfelder, Terminal, Gewässer, Autobahnen."}
+};
+const IMAGES = [
+  {id:"B1", t:"Berlin Tegel Airport (TXL) - April 2019 (2)", who:"Rehman Abubakr", y:"2019", lic:"CC BY-SA 4.0", licUrl:"https://creativecommons.org/licenses/by-sa/4.0/deed.de", url:"https://commons.wikimedia.org/wiki/File:Berlin_Tegel_Airport_(TXL)_-_April_2019_(2).jpg", use:"Titelbild (verkleinert, entsättigt)"},
+  {id:"B2", t:"Berlin Tegel runway 2015", who:"Orderinchaos", y:"2015", lic:"CC BY-SA 4.0", licUrl:"https://creativecommons.org/licenses/by-sa/4.0/deed.de", url:"https://commons.wikimedia.org/wiki/File:Berlin_Tegel_runway_2015.jpg", use:"Kapitel 1 und Vergleichsregler (verkleinert)"},
+  {id:"B3", t:"Flughafen TXL Landebahn Süd", who:"Dirk1981", y:"2022", lic:"CC BY-SA 4.0", licUrl:"https://creativecommons.org/licenses/by-sa/4.0/deed.de", url:"https://commons.wikimedia.org/wiki/File:Flughafen_TXL_Landebahn_S%C3%BCd.jpg", use:"Vergleichsregler (verkleinert)"},
+  {id:"B4", t:"Flughafen TXL Terminal A", who:"Dirk1981", y:"2022", lic:"CC BY-SA 4.0", licUrl:"https://creativecommons.org/licenses/by-sa/4.0/deed.de", url:"https://commons.wikimedia.org/wiki/File:Flughafen_TXL_Terminal_A.jpg", use:"Kapitel 2 (verkleinert)"},
+  {id:"B5", t:"Berlin-Tegel from the air", who:"Tim Pritlove", y:"2005", lic:"CC BY 2.0", licUrl:"https://creativecommons.org/licenses/by/2.0/deed.de", url:"https://commons.wikimedia.org/wiki/File:Berlin-Tegel_from_the_air.jpg", use:"Kapitel 4"},
+  {id:"B6", t:"Berliner Flughafen Tegel von oben 02", who:"Berlinschneid", y:"2019", lic:"CC BY-SA 4.0", licUrl:"https://creativecommons.org/licenses/by-sa/4.0/deed.de", url:"https://commons.wikimedia.org/wiki/File:Berliner_Flughafen_Tegel_von_oben_02.jpg", use:"Schlussbild (verkleinert)"}
+];
+const KIND = {mess:"● Messwert", calc:"∑ Berechnung", stat:"≈ Statistik"};
+const INFO = {
+  r56:{v:"5,6 mm", what:"Niederschlag im März 2025.", how:"Summe der täglichen Niederschlagswerte des Monats.", kind:"calc", src:[1]},
+  r122:{v:"12,2 mm", what:"Niederschlag im April 2025.", how:"Summe der täglichen Niederschlagswerte des Monats.", kind:"calc", src:[1]},
+  r178:{v:"17,8 mm", what:"Gesamter Niederschlag im März und April 2025.", how:"Summe der täglichen Niederschlagswerte vom 01.03. bis 30.04.2025.", kind:"calc", src:[1]},
+  g18:{v:"-0,18 m", what:"Typische Veränderung des Grundwassers im März und April 2025 (genau -0,183 m). Spanne: -0,062 bis -1,229 m.", how:"Je Messstelle Wert am 30.04. minus Wert am 01.03.2025, dann Median über acht Messstellen.", kind:"stat", src:[2]},
+  r118:{v:"118 mm", what:"Gesamtniederschlag im Juli 2025.", how:"Summe der täglichen Niederschlagswerte des Monats (HYRAS-Version v6-1).", kind:"calc", src:[1]},
+  r1006:{v:"100,6 mm", what:"Niederschlag vom 10. bis 23. Juli 2025 (14 Tage).", how:"Summe der täglichen Niederschlagswerte.", kind:"calc", src:[1]},
+  r584:{v:"58,4 mm", what:"Niederschlag vom 17. bis 23. Juli 2025 (7 Tage).", how:"Summe der täglichen Niederschlagswerte.", kind:"calc", src:[1]},
+  r1316:{v:"131,6 mm", what:"Niederschlag vom 7. Juli bis 5. August 2025 - die höchste 30-Tage-Summe im Zeitraum.", how:"Gleitende Summe über 30 Tage, davon das Maximum.", kind:"calc", src:[1]},
+  g87:{v:"+0,09 m", what:"Typischer Anstieg des Grundwassers vom 10.07. bis 20.08.2025 (genau +0,0865 m). Spanne: +0,005 bis +0,334 m.", how:"Je Messstelle letzter minus erster Messwert im Zeitraum, dann Median über acht Messstellen.", kind:"stat", src:[2]},
+  r407:{v:"40,7 mm", what:"Niederschlag am 19. April 2026 - höchster Tageswert im Datensatz.", how:"Direkt aus den Tageswerten abgelesen.", kind:"mess", src:[1]},
+  r101:{v:"101 mm", what:"Niederschlag vom 19. April bis 19. Juni 2026 (genau 101,3 mm).", how:"Summe der täglichen Niederschlagswerte.", kind:"calc", src:[1]},
+  g7:{v:"+0,07 m", what:"Typischer Anstieg des Grundwassers vom 19.04. bis 19.06.2026 (genau +0,0705 m). Spanne: -0,011 bis +1,359 m.", how:"Je Messstelle Wert am 19.06. minus Wert am 19.04.2026, dann Median.", kind:"stat", src:[2]},
+  range32:{v:"2,1 m", what:"Schwankungsbreite der Messstelle gwm32-22-op im Analysezeitraum: höchster Wert 28,31 m (01.03.2025), tiefster Wert 26,18 m (17.04.2026).", how:"Höchster minus tiefster Tageswert = 2,13 m.", kind:"calc", src:[2]},
+  g425:{v:"-0,43 m", what:"Typische Veränderung des Grundwassers vom 01.03.2025 bis 22.09.2026 (genau -0,425 m). Spanne: -0,344 bis -1,312 m; alle acht Messstellen sind gesunken.", how:"Je Messstelle Wert am 22.09.2026 minus Wert am 01.03.2025, dann Median.", kind:"stat", src:[2]},
+  lag:{v:"≈ 1-2 Wochen", what:"Verschiebung, bei der Regen und spätere Grundwasseränderung am stärksten zusammenhängen.", how:"", kind:"stat", src:[1,2]}
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const refLinks = arr => arr.map(n => `<a href="#q${n}" class="jump">[${n}] ${esc(SOURCES[n].title)}</a>`).join("<br>");
+function srcCard(n){
+  const s = SOURCES[n];
+  if (s.g === "data") return `<h4>[${n}] ${esc(s.title)}</h4><dl><dt>Art</dt><dd>Datengrundlage, eigene Auswertung</dd><dt>Herkunft</dt><dd>${esc(s.pub)}</dd><dt>Verwendung</dt><dd>${esc(s.use)}</dd>${s.note ? `<dt>Hinweis</dt><dd>${esc(s.note)}</dd>` : ""}<dt>URL</dt><dd>keine - lokale Datei</dd></dl><a href="#q${n}" class="jump">Im Quellenverzeichnis ↓</a>`;
+  return `<h4>[${n}] <a href="${s.url}" target="_blank" rel="noopener">${esc(s.title)}</a></h4><dl><dt>Herausgeber</dt><dd>${esc(s.a)}</dd><dt>Veröffentlicht</dt><dd>${s.date || "keine Angabe"}</dd><dt>Abgerufen</dt><dd>${ABRUF}</dd><dt>Belegt</dt><dd>${esc(s.use)}</dd><dt>URL</dt><dd><a href="${s.url}" target="_blank" rel="noopener">${esc(s.url)}</a></dd></dl><a href="#q${n}" class="jump">Im Quellenverzeichnis ↓</a>`;
+}
+function infoCard(k){
+  const i = INFO[k]; let how = i.how;
+  if (k === "lag"){ const pk = LAGS.map(g => { const a = D.lag[g.key]; const m = a.indexOf(Math.max(...a)); return [m, a[m], a[14]]; });
+    how = `30-Tage-Regensumme mit 30-Tage-Grundwasseränderung verglichen, um 0-42 Tage verschoben (Pearson-Korrelation, drei Varianten). Höchster Wert nach ${Math.min(...pk.map(p=>p[0]))}-${Math.max(...pk.map(p=>p[0]))} Tagen (r = ${nf(Math.min(...pk.map(p=>p[1])),2)} bis ${nf(Math.max(...pk.map(p=>p[1])),2)}); bei 14 Tagen r = ${nf(Math.min(...pk.map(p=>p[2])),2)} bis ${nf(Math.max(...pk.map(p=>p[2])),2)}. Korrelation ist keine Ursache.`; }
+  return `<div class="kicker">Woher kommt diese Zahl?</div><div class="pv num">${i.v}</div><dl><dt>Was ist das?</dt><dd>${esc(i.what)}</dd><dt>Wie berechnet?</dt><dd>${esc(how)}</dd><dt>Art</dt><dd><span class="kind">${KIND[i.kind]}</span>${i.kind === "mess" ? " · direkt in den Rohdaten" : " · eigene Berechnung aus Messdaten"}</dd><dt>Quelle</dt><dd>${refLinks(i.src)}</dd></dl>`;
+}
+let pop = null;
+function closePop(){ if (pop){ pop.remove(); pop = null; } }
+function openPop(trigger, html){
+  closePop();
+  pop = document.createElement("div"); pop.className = "pop";
+  pop.innerHTML = `<button class="x">×</button>${html}`;
+  document.body.appendChild(pop);
+  const r = trigger.getBoundingClientRect(), w = pop.offsetWidth;
+  const left = Math.max(16 + scrollX, Math.min(r.left + scrollX - 12, scrollX + document.documentElement.clientWidth - w - 16));
+  let top = r.bottom + scrollY + 8; if (r.bottom + pop.offsetHeight + 16 > innerHeight && r.top > pop.offsetHeight + 16) top = r.top + scrollY - pop.offsetHeight - 8;
+  pop.style.left = left + "px"; pop.style.top = top + "px";
+  pop.querySelector(".x").onclick = closePop;
+  pop.querySelectorAll(".jump").forEach(a => a.addEventListener("click", () => { pop.remove(); pop = null; }));
+}
+document.addEventListener("click", ev => {
+  const ref = ev.target.closest(".ref[data-ref]"), inf = ev.target.closest(".info[data-info]");
+  if (ref){ ev.preventDefault(); ev.stopPropagation(); openPop(ref, srcCard(ref.dataset.ref)); return; }
+  if (inf){ ev.preventDefault(); ev.stopPropagation(); openPop(inf, infoCard(inf.dataset.info)); return; }
+  if (pop && !pop.contains(ev.target)) closePop();
+}, true);
+function initRefs(){
+  document.querySelectorAll(".ref[data-ref]").forEach(a => { a.href = "#q" + a.dataset.ref; });
+  const d = [], x = [];
+  Object.entries(SOURCES).forEach(([n, s]) => {
+    if (s.g === "data") d.push(`<li id="q${n}"><span class="n">[${n}]</span><div><code>${esc(s.title)}</code><div class="meta"><b>Verwendung:</b> ${esc(s.use)}${s.note ? `<br><b>Hinweis:</b> ${esc(s.note)}` : ""}</div></div></li>`);
+    else x.push(`<li id="q${n}"><span class="n">[${n}]</span><div>${esc(s.a)}. "<a href="${s.url}" target="_blank" rel="noopener">${esc(s.title)}</a>". ${esc(s.site)}. ${s.date || "o. J."}. <a href="${s.url}" target="_blank" rel="noopener">${esc(s.url)}</a>. Abgerufen am ${ABRUF}.<div class="meta"><b>Belegt:</b> ${esc(s.use)}</div></div></li>`);
+  });
+  document.getElementById("bib-data").innerHTML = d.join("");
+  document.getElementById("bib-ext").innerHTML = x.join("");
+  document.getElementById("bib-img").innerHTML = IMAGES.map(i => `<li><span class="n">${i.id}</span><div>${esc(i.who)}: "<a href="${i.url}" target="_blank" rel="noopener">${esc(i.t)}</a>", ${i.y}. Wikimedia Commons. Lizenz: <a href="${i.licUrl}" target="_blank" rel="noopener">${i.lic}</a>.<div class="meta"><b>Verwendet:</b> ${esc(i.use)}</div></div></li>`).join("") + `<li><span class="n">-</span><div>Alle übrigen Grafiken und Illustrationen: eigene Darstellungen. Keine KI-generierten Bilder.</div></li>`;
+}
+
+(() => { const c = document.getElementById("compare"), r = document.getElementById("compare-range");
+  const set = () => c.style.setProperty("--pos", r.value + "%"); r.addEventListener("input", set); set(); })();
+
+const IC = {
+  rain:`<svg viewBox="0 0 48 48"><path d="M14 22a10 10 0 0 1 19-4 7 7 0 1 1 2 14H15a6 6 0 0 1-1-10z" fill="var(--rain-soft)"/><path d="M17 36l-2 5M25 36l-2 5M33 36l-2 5" stroke="var(--rain)" stroke-width="3" stroke-linecap="round"/></svg>`,
+  asphalt:`<svg viewBox="0 0 48 48"><rect x="4" y="18" width="40" height="16" rx="2" fill="var(--asphalt)"/><path d="M10 26h8M22 26h8M34 26h6" stroke="var(--paper)" stroke-width="2.5"/></svg>`,
+  fast:`<svg viewBox="0 0 48 48"><path d="M6 20h26M6 28h30M6 36h22" stroke="var(--rain)" stroke-width="3" stroke-linecap="round"/><path d="M34 14l8 10-8 10" fill="none" stroke="var(--rain)" stroke-width="3" stroke-linecap="round"/></svg>`,
+  sewer:`<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16" fill="var(--asphalt)"/><path d="M14 20h20M14 25h20M14 30h20" stroke="var(--paper)" stroke-width="2.5"/></svg>`,
+  roof:`<svg viewBox="0 0 48 48"><rect x="8" y="22" width="32" height="18" fill="var(--asphalt)"/><path d="M6 22h36" stroke="var(--green)" stroke-width="6" stroke-linecap="round"/><path d="M12 18v-3M20 18v-4M28 18v-3M36 18v-4" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+  plant:`<svg viewBox="0 0 48 48"><path d="M24 42V22" stroke="var(--green)" stroke-width="3"/><path d="M24 26c-8 0-12-6-12-12 8 0 12 5 12 12zM24 22c0-8 5-12 12-12 0 8-5 12-12 12z" fill="var(--green)"/></svg>`,
+  bed:`<svg viewBox="0 0 48 48"><path d="M4 30h40l-5 10H9z" fill="var(--green-soft)"/><path d="M8 30q16 -8 32 0" fill="var(--rain-soft)"/><path d="M14 30v-8M24 30v-10M34 30v-8" stroke="var(--green)" stroke-width="3" stroke-linecap="round"/></svg>`,
+  store:`<svg viewBox="0 0 48 48"><rect x="10" y="8" width="28" height="34" rx="5" fill="none" stroke="var(--gw)" stroke-width="3"/><rect x="13" y="22" width="22" height="17" rx="3" fill="var(--rain-soft)"/></svg>`,
+  evap:`<svg viewBox="0 0 48 48"><path d="M16 40c-4-6 4-8 0-14s4-8 0-14M26 40c-4-6 4-8 0-14s4-8 0-14M36 40c-4-6 4-8 0-14s4-8 0-14" fill="none" stroke="var(--rain)" stroke-width="2.5" stroke-linecap="round" opacity=".8"/></svg>`,
+  seep:`<svg viewBox="0 0 48 48"><rect x="4" y="8" width="40" height="34" rx="3" fill="var(--dry-soft)" opacity=".7"/><path d="M14 12v8M24 16v10M34 12v8" stroke="var(--rain)" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 4"/><rect x="4" y="34" width="40" height="8" fill="var(--gw)"/></svg>`
+};
+function flow(id, items, end){
+  const box = document.getElementById(id);
+  items.forEach(([ic, label], k) => { if (k) box.insertAdjacentHTML("beforeend", `<span class="arrow" style="animation-delay:${k*.25}s">↓</span>`); box.insertAdjacentHTML("beforeend", `<div class="step-ico">${IC[ic]}<span>${label}</span></div>`); });
+  box.insertAdjacentHTML("beforeend", `<span class="arrow">↓</span><span class="end">${end}</span>`);
+}
+flow("flow-grey", [["rain","Regen"],["asphalt","Asphalt / Dach"],["fast","fließt schnell ab"],["sewer","Kanalisation"]], "Wasser ist weg");
+flow("flow-green", [["rain","Regen"],["roof","Gründach"],["plant","Pflanzen"],["bed","Regenbeet"],["store","Speicherung"],["evap","Verdunstung"],["seep","Versickerung"]], "Wasser bleibt");
+
+(() => { const h = document.getElementById("future-illu"); h.innerHTML = `<svg viewBox="0 0 400 200" style="width:100%;height:auto;display:block">
+  <rect width="400" height="200" rx="8" fill="var(--green-bg)"/>
+  <rect x="0" y="150" width="400" height="50" fill="var(--dry-soft)" opacity=".6"/><rect x="0" y="185" width="400" height="15" fill="var(--gw)" opacity=".7"/>
+  <rect x="30" y="80" width="90" height="70" fill="var(--asphalt)"/><rect x="26" y="74" width="98" height="8" rx="3" fill="var(--green)"/>
+  <rect x="250" y="60" width="110" height="90" fill="var(--asphalt)"/><rect x="246" y="54" width="118" height="8" rx="3" fill="var(--green)"/>
+  <path d="M140 150q30 -14 60 0z" fill="var(--rain-soft)"/><circle cx="150" cy="118" r="18" fill="var(--green)"/><rect x="148" y="130" width="4" height="20" fill="var(--asphalt-dark)"/>
+  <circle cx="220" cy="112" r="22" fill="var(--green)"/><rect x="218" y="128" width="4" height="22" fill="var(--asphalt-dark)"/>
+  <path d="M60 20l-4 10M90 14l-4 10M300 16l-4 10M330 22l-4 10M190 18l-4 10" stroke="var(--rain)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M170 155v14M185 158v14" stroke="var(--rain)" stroke-width="2.5" stroke-dasharray="3 4"/>
+  <text x="20" y="196" style="fill:#fff;font-size:10px">Grundwasser</text><text x="140" y="146" class="lbl" style="font-size:10px">Regenbeet</text><text x="30" y="70" class="lbl" style="font-size:10px">Gründach</text></svg>`; })();
+
+(() => { document.getElementById("soil").innerHTML = `<svg viewBox="0 0 400 260">
+  <rect width="400" height="260" rx="10" fill="var(--card)"/>
+  <path d="M40 16l-4 12M70 10l-4 12M100 18l-4 12M130 12l-4 12M160 16l-4 12" stroke="var(--rain)" stroke-width="3" stroke-linecap="round"/>
+  <text x="178" y="26" class="strong">Regen</text>
+  <rect x="0" y="80" width="400" height="10" fill="var(--green)"/><text x="10" y="76" class="lbl">Oberfläche</text>
+  <rect x="0" y="90" width="400" height="110" fill="var(--dry-soft)" opacity=".75"/><text x="10" y="110" class="lbl">Boden</text>
+  <rect x="0" y="200" width="400" height="60" fill="var(--gw)"/><text x="10" y="236" style="fill:#fff;font-weight:600">Grundwasser</text>
+  <path d="M250 70c-4-10 4-14 0-24s4-14 0-22" fill="none" stroke="var(--rain)" stroke-width="2.5"/><text x="262" y="44" class="lbl">verdunstet</text>
+  <path d="M320 80v-26" stroke="var(--green)" stroke-width="3"/><path d="M320 60c-8 0-12-5-12-11 8 0 12 5 12 11zM320 56c0-8 5-12 12-12 0 8-5 12-12 12z" fill="var(--green)"/><text x="336" y="72" class="lbl">Pflanzen</text>
+  <path d="M190 74h40" stroke="var(--rain)" stroke-width="3" marker-end="url(#ah)"/><text x="184" y="64" class="lbl">fließt ab</text>
+  <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--rain)"/></marker></defs>
+  <path d="M90 96v30M110 96v60M130 96v96" stroke="var(--rain)" stroke-width="3" stroke-dasharray="4 6" stroke-linecap="round"/>
+  <text x="140" y="140" class="lbl">bleibt im Boden gespeichert</text><text x="140" y="186" class="strong">versickert tiefer ↓</text></svg>`; })();
+
+(() => { const b = document.getElementById("buckets-dry"); const bucket = f => `<svg viewBox="0 0 46 52"><path d="M6 10h34l-4 38H10z" fill="none" stroke="var(--ink-2)" stroke-width="2.5"/><clipPath id="c${f}"><path d="M6 10h34l-4 38H10z"/></clipPath><rect x="0" y="${10 + 38*(1-f)}" width="46" height="${38*f}" fill="var(--rain)" clip-path="url(#c${f})"/><path d="M8 10q15 -12 30 0" fill="none" stroke="var(--ink-2)" stroke-width="2"/></svg>`;
+  b.innerHTML = bucket(1) + bucket(0.78); })();
+(() => { const host = document.getElementById("barrels"); const mk = (v, label, max, cls) => { const H = 150, f = v / max; return `<div class="barrel"><svg viewBox="0 0 120 190"><ellipse cx="60" cy="20" rx="46" ry="10" fill="none" stroke="var(--ink-2)" stroke-width="2.5"/><path d="M14 20v150a46 10 0 0 0 92 0V20" fill="none" stroke="var(--ink-2)" stroke-width="2.5"/><rect x="16" y="${20 + H*(1-f)}" width="88" height="${H*f}" fill="${cls}"/><ellipse cx="60" cy="${20 + H*(1-f)}" rx="44" ry="8" fill="${cls}" opacity=".7"/><ellipse cx="60" cy="170" rx="44" ry="9" fill="${cls}"/></svg><span class="num" style="font-size:1.6rem;font-weight:600">${nf(v)} l/m²</span><span style="font-size:.9rem;color:var(--ink-2)">${label}</span></div>`; };
+  host.innerHTML = mk(17.8, "März + April 2025", 140, "var(--dry)") + mk(131.6, "7. Juli - 5. August 2025", 140, "var(--rain)"); })();
+
+function stationBars(hostId, vals, opts={}){
+  const host = document.getElementById(hostId), W = Math.max(300, host.clientWidth), rowH = 30, T = 8, H = T + rowH * vals.length + 26, L = 118, R = 72;
+  const s = svgFor(host, W, H);
+  const lo = Math.min(0, ...vals), hi = Math.max(0, ...vals), x = v => L + (W - L - R) * (v - lo) / (hi - lo || 1);
+  const order = vals.map((v, k) => [v, k]).sort((a, b) => a[0] - b[0]);
+  el("line", {x1:x(0), x2:x(0), y1:T-4, y2:H-22, stroke:"var(--ink-2)"}, s);
+  order.forEach(([v, k], r) => {
+    const y = T + r * rowH, x0 = x(Math.min(0, v)), w = Math.abs(x(v) - x(0));
+    txt(s, L - 8, y + 18, IDS[k], {"text-anchor":"end", class: IDS[k] === "gwm32-22-op" ? "strong" : "lbl"});
+    const bar = el("rect", {x:x0, y:y + 6, width:Math.max(2, w), height:rowH - 12, rx:3, fill: v < 0 ? "var(--dry)" : "var(--gw)"}, s);
+    txt(s, v < 0 ? x0 - 6 : x0 + w + 6, y + 18, sg(v, 3) + " m", {"text-anchor": v < 0 ? "end" : "start", class:"strong"});
+    hoverable(bar, () => `<b>${IDS[k]}</b><br>${opts.period || ""}<br>Änderung: <b>${sg(v, 3)} m</b>`);
+  });
+  const med = [...vals].sort((a, b) => a - b); const m = (med[3] + med[4]) / 2;
+  el("line", {x1:x(m), x2:x(m), y1:T-4, y2:H-22, stroke:"var(--ink)", "stroke-width":2, "stroke-dasharray":"4 3"}, s);
+  txt(s, x(m), H - 8, "Median " + sg(m, 3) + " m", {"text-anchor": m < 0 ? "start" : "middle", class:"strong"});
+  // labels of long negative bars would cover the station names, put them right of the axis
+  s.querySelectorAll("text[text-anchor=end].strong").forEach(t => { if (+t.getAttribute("x") < L + 40){ t.setAttribute("x", x(0) + 6); t.setAttribute("text-anchor","start"); } });
+}
+
+function drawJuly(){
+  const host = document.getElementById("july"), W = Math.max(300, host.clientWidth), H = 190, L = 28, R = 6, T = 22, B = 24;
+  const a = idxOf("2025-07-01"), days = 31, step = (W - L - R) / days, bw = Math.max(3, step - 2);
+  const y = v => T + (H - T - B) * (1 - v / 25);
+  const s = svgFor(host, W, H);
+  [0,10,20].forEach(v => { el("line", {x1:L, x2:W-R, y1:y(v), y2:y(v), stroke:"rgba(255,255,255,.25)"}, s); txt(s, L-6, y(v)+4, v, {"text-anchor":"end", style:"fill:#dbe9f7"}); });
+  for (let d = 0; d < days; d++){
+    const v = D.rain[a + d] || 0, cx = L + step * d + step / 2, hot = d >= 20 && d <= 22;
+    const r = el("rect", {x:cx - bw/2, y:y(v), width:bw, height:Math.max(0, y(0) - y(v)), rx:2, fill: hot ? "#ffffff" : "rgba(255,255,255,.55)"}, s);
+    if (hot) txt(s, cx, y(v) - 5, nf(v), {"text-anchor":"middle", style:"fill:#fff;font-weight:600"});
+    if ([0,9,16,20,30].includes(d)) txt(s, cx, H - 6, (d + 1) + ".", {"text-anchor":"middle", style:"fill:#dbe9f7"});
+    const hit = el("rect", {x:L + step * d, y:T, width:step, height:H - T - B, fill:"transparent"}, s);
+    hoverable(hit, () => `<b>${fmtD(a + d)}</b><br>Niederschlag: <b>${nf(v)} mm</b>`);
+  }
+  txt(s, W - R, 12, "mm pro Tag", {"text-anchor":"end", style:"fill:#dbe9f7"});
+}
+
+function drawAprMar(){
+  const host = document.getElementById("apr-vs-mar"), W = Math.max(300, host.clientWidth), H = 120, L = 150, R = 60;
+  const s = svgFor(host, W, H);
+  const x = v => L + (W - L - R) * v / 42;
+  [["19. April 2026 (1 Tag)", 40.7, "var(--rain)"], ["März 2026 (31 Tage)", 12.9, "var(--dry)"]].forEach(([l, v, c], k) => {
+    const y = 18 + k * 50; txt(s, L - 10, y + 22, l, {"text-anchor":"end", class:"lbl"});
+    el("rect", {x:L, y, width:x(v) - L, height:32, rx:4, fill:c}, s); txt(s, x(v) + 8, y + 22, nf(v) + " mm", {class:"strong"}); });
+}
+
+function drawSpark32(){
+  const host = document.getElementById("spark32"), W = Math.max(300, host.clientWidth), H = 170, L = 44, R = 10, T = 16, B = 24;
+  const a = D.gwAbs["gwm32-22-op"], vals = a.filter(v => v != null), lo = 26, hi = 28.5;
+  const x = i => L + (W - L - R) * i / (N - 1), y = v => T + (H - T - B) * (hi - v) / (hi - lo);
+  const s = svgFor(host, W, H);
+  [26, 27, 28].forEach(v => { el("line", {x1:L, x2:W-R, y1:y(v), y2:y(v), stroke:"var(--rule)"}, s); txt(s, L-6, y(v)+4, nf(v,0) + " m", {"text-anchor":"end"}); });
+  let p = "", pen = false; a.forEach((v, i) => { if (v == null) return; p += (pen ? "L" : "M") + x(i).toFixed(1) + "," + y(v).toFixed(1); pen = true; });
+  el("path", {d:p, fill:"none", stroke:"var(--s8)", "stroke-width":2}, s);
+  const iMax = a.indexOf(Math.max(...vals)), iMin = a.indexOf(Math.min(...vals));
+  el("line", {x1:x(iMin) + 14, x2:x(iMin) + 14, y1:y(a[iMax]), y2:y(a[iMin]), stroke:"var(--ink)", "stroke-width":1.5}, s);
+  txt(s, x(iMin) + 20, (y(a[iMax]) + y(a[iMin])) / 2 + 4, "≈ 2,1 m", {class:"strong"});
+  [iMax, iMin].forEach(i => { el("circle", {cx:x(i), cy:y(a[i]), r:4.5, fill:"var(--s8)", stroke:"var(--card)", "stroke-width":2}, s); });
+  txt(s, x(iMax) + 8, y(a[iMax]) + 4, nf(a[iMax],2) + " m", {class:"lbl"}); txt(s, x(iMin) - 8, y(a[iMin]) + 16, nf(a[iMin],2) + " m · " + fmtD(iMin), {"text-anchor":"middle", class:"lbl"});
+  txt(s, L, H - 4, "03/2025", {}); txt(s, W - R, H - 4, "09/2026", {"text-anchor":"end"});
+}
+
+// 4th value = index in D.episodes, label shows median of the station changes (same as text)
+const STEPS = {0:null, 1:["2025-03-01","2025-04-30","dry",0], 2:["2025-07-07","2025-08-05","rain",null], 3:["2025-07-10","2025-08-20","gw",1]};
+const medianOf = a => { const s = [...a].sort((p, q) => p - q), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m-1] + s[m]) / 2; };
+let curStep = 0;
+function drawScrolly(){
+  const hr = document.getElementById("sc-rain"), hg = document.getElementById("sc-gw");
+  const W = Math.max(300, hr.clientWidth), L = 40, R = 8, pw = W - L - R, x = i => L + i * pw / (N - 1);
+  const st = STEPS[curStep];
+  const inB = i => !st || (i >= idxOf(st[0]) && i <= idxOf(st[1]));
+  // rain
+  const HR = 110, rt = 10, rb = 4, y = v => rt + (HR - rt - rb) * (1 - v / 42);
+  const s1 = svgFor(hr, W, HR);
+  if (st) el("rect", {x:x(idxOf(st[0])), y:0, width:x(idxOf(st[1])) - x(idxOf(st[0])), height:HR, fill: st[2] === "dry" ? "var(--band-dry)" : "var(--band)"}, s1);
+  [0, 20, 40].forEach(v => { el("line", {x1:L, x2:W-R, y1:y(v), y2:y(v), stroke:"var(--rule)"}, s1); txt(s1, L-6, y(v)+4, v, {"text-anchor":"end"}); });
+  const bw = Math.max(1, pw / N * .8); let dIn = "", dOut = "";
+  D.rain.forEach((v, i) => { if (v > 0){ const seg = `M${(x(i)-bw/2).toFixed(1)},${y(0).toFixed(1)}V${y(v).toFixed(1)}h${bw.toFixed(2)}V${y(0).toFixed(1)}z`; if (inB(i) && (!st || st[2] !== "gw")) dIn += seg; else dOut += seg; } });
+  el("path", {d:dOut, fill: st ? "var(--rain-soft)" : "var(--rain)", opacity: st ? .6 : 1}, s1);
+  el("path", {d:dIn, fill:"var(--rain)"}, s1);
+  txt(s1, W - R, 10, "Regen, mm/Tag", {"text-anchor":"end", class:"lbl"});
+  // gw
+  const HG = 240, gt = 8, gb = 26, lo = -0.8, hi = 0.2, yg = v => gt + (HG - gt - gb) * (hi - Math.max(lo, v)) / (hi - lo);
+  const s2 = svgFor(hg, W, HG);
+  if (st) el("rect", {x:x(idxOf(st[0])), y:gt, width:x(idxOf(st[1])) - x(idxOf(st[0])), height:HG - gt - gb, fill: st[2] === "dry" ? "var(--band-dry)" : "var(--band)"}, s2);
+  [-0.8, -0.4, 0].forEach(v => { el("line", {x1:L, x2:W-R, y1:yg(v), y2:yg(v), stroke: v ? "var(--rule)" : "var(--ink-2)"}, s2); txt(s2, L-6, yg(v)+4, v ? sg(v,1) : "0", {"text-anchor":"end"}); });
+  txt(s2, L + 4, gt + 10, "m seit 01.03.2025 (unter -0,8 abgeschnitten)", {class:"lbl"});
+  const pathOf = arr => { let p = "", pen = false; arr.forEach((v, i) => { if (v == null) return; p += (pen ? "L" : "M") + x(i).toFixed(1) + "," + yg(v).toFixed(1); pen = true; }); return p; };
+  IDS.forEach(id => el("path", {d:pathOf(D.gw[id]), fill:"none", stroke:"var(--gw-soft)", "stroke-width":1.2, opacity:.8}, s2));
+  el("path", {d:pathOf(D.median), fill:"none", stroke:"var(--gw)", "stroke-width":3.2, "stroke-linejoin":"round"}, s2);
+  let yr = null; for (let i = 0; i < N; i++){ const d = dayDate(i); if (d.getUTCDate() === 1 && d.getUTCMonth() % 3 === 0){ txt(s2, x(i), HG - 8, d.toLocaleDateString("de-DE",{month:"short", year:"2-digit", timeZone:"UTC"}).replace(".", ""), {"text-anchor":"middle"}); } }
+  if (st){ const a = idxOf(st[0]), b = idxOf(st[1]), m1 = ffill(D.median)[b];
+    [a, b].forEach(i => el("circle", {cx:x(i), cy:yg(ffill(D.median)[i]), r:5, fill:"var(--gw)", stroke:"var(--card)", "stroke-width":2}, s2));
+    if (st[3] != null) txt(s2, x(b) + 6, yg(m1) - 8, "Median der Messstellen " + sg(medianOf(D.episodes[st[3]]), 3) + " m", {class:"strong"}); }
+  const c1 = el("line", {y1:0, y2:HR, stroke:"var(--ink)", visibility:"hidden"}, s1), c2 = el("line", {y1:gt, y2:HG-gb, stroke:"var(--ink)", visibility:"hidden"}, s2);
+  [s1, s2].forEach(s => { const ov = el("rect", {x:L, y:0, width:pw, height: s === s1 ? HR : HG, fill:"transparent"}, s);
+    const move = ev => { const r = s.getBoundingClientRect(), i = Math.max(0, Math.min(N-1, Math.round(((ev.clientX - r.left) * W / r.width - L) / pw * (N-1))));
+      [c1, c2].forEach(c => { c.setAttribute("x1", x(i)); c.setAttribute("x2", x(i)); c.setAttribute("visibility","visible"); });
+      showTip(`<b>${fmtD(i)}</b><br>Regen: ${nf(D.rain[i])} mm<br>Grundwasser (Median): ${sg(ffill(D.median)[i], 3)} m`, ev); };
+    ov.addEventListener("pointermove", move); ov.addEventListener("click", e => { e.stopPropagation(); move(e); });
+    ov.addEventListener("pointerleave", () => { [c1, c2].forEach(c => c.setAttribute("visibility","hidden")); hideTip(); }); });
+}
+function setStep(n){ if (n === curStep) return; curStep = n; document.querySelectorAll(".stepcard").forEach(c => c.classList.toggle("on", +c.dataset.step === n)); drawScrolly(); }
+document.querySelectorAll(".stepcard").forEach(c => { c.addEventListener("click", () => setStep(+c.dataset.step)); });
+if ("IntersectionObserver" in window){
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) setStep(+e.target.dataset.step); }), {rootMargin:"-45% 0px -45% 0px"});
+  document.querySelectorAll(".stepcard").forEach(c => io.observe(c));
+}
+
+const LAGS = [{key:"mean", name:"Mittelwert", stroke:"var(--gw)", w:3, dash:""},{key:"median", name:"Median", stroke:"var(--ink-2)", w:2, dash:""},{key:"per", name:"je Messstelle", stroke:"var(--muted)", w:2, dash:"6 4"}];
+function drawLag(){
+  const host = document.getElementById("lag"), W = Math.max(300, host.clientWidth), H = 220, L = 34, R = 10, T = 10, B = 60;
+  const x = d => L + (W - L - R) * d / 42, y = v => T + (H - T - B) * (0.7 - v) / 0.7;
+  const s = svgFor(host, W, H);
+  el("rect", {x:x(7), y:T, width:x(14) - x(7), height:H - T - B, fill:"var(--band)"}, s);
+  [0, .2, .4, .6].forEach(v => { el("line", {x1:L, x2:W-R, y1:y(v), y2:y(v), stroke: v ? "var(--rule)" : "var(--ink-2)"}, s); txt(s, L-6, y(v)+4, nf(v,1), {"text-anchor":"end"}); });
+  [0,7,14,21,28,35,42].forEach(d => txt(s, x(d), H - B + 16, d, {"text-anchor":"middle"}));
+  txt(s, (x(0) + x(42)) / 2, H - B + 30, "Verschiebung in Tagen", {"text-anchor":"middle", class:"lbl"});
+  LAGS.forEach((g, k) => { const a = D.lag[g.key];
+    el("path", {d:a.map((v, d) => (d ? "L" : "M") + x(d).toFixed(1) + "," + y(v).toFixed(1)).join(""), fill:"none", stroke:g.stroke, "stroke-width":g.w, "stroke-dasharray":g.dash}, s);
+    el("line", {x1:L + k * 110, x2:L + k * 110 + 22, y1:H - 10, y2:H - 10, stroke:g.stroke, "stroke-width":g.w, "stroke-dasharray":g.dash}, s);
+    txt(s, L + k * 110 + 28, H - 6, g.name, {class:"lbl"}); });
+  const ov = el("rect", {x:L, y:T, width:W - L - R, height:H - T - B, fill:"transparent"}, s);
+  const mv = ev => { const r = s.getBoundingClientRect(), d = Math.max(0, Math.min(42, Math.round(((ev.clientX - r.left) * W / r.width - L) / (W - L - R) * 42)));
+    showTip(`<b>${d} Tage verschoben</b><br>${LAGS.map(g => `${g.name}: r = ${nf(D.lag[g.key][d],2)}`).join("<br>")}`, ev); };
+  ov.addEventListener("pointermove", mv); ov.addEventListener("click", e => { e.stopPropagation(); mv(e); }); ov.addEventListener("pointerleave", hideTip);
+}
+
+let map, markers = {}, mapDay = N - 1, openId = null;
+const GWF = {}; IDS.forEach(id => { GWF[id] = ffill(D.gw[id]); });
+const ABSF = {}; IDS.forEach(id => { ABSF[id] = ffill(D.gwAbs[id]); });
+function sparkSVG(id, day){
+  const a = D.gwAbs[id], v = a.filter(q => q != null), lo = Math.min(...v), hi = Math.max(...v), W = 220, H = 60;
+  const x = i => 4 + (W - 8) * i / (N - 1), y = q => 6 + (H - 12) * (hi - q) / (hi - lo || 1);
+  let p = "", pen = false; a.forEach((q, i) => { if (q == null) return; p += (pen ? "L" : "M") + x(i).toFixed(1) + "," + y(q).toFixed(1); pen = true; });
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;margin:6px 0"><path d="${p}" fill="none" stroke="${css("--gw")}" stroke-width="2"/><line x1="${x(day)}" x2="${x(day)}" y1="0" y2="${H}" stroke="${css("--ink")}" stroke-dasharray="3 2"/><circle cx="${x(day)}" cy="${y(ABSF[id][day])}" r="4" fill="${css("--ink")}"/></svg>`;
+}
+function popupHtml(id){
+  const k = IDS.indexOf(id), lvl = ABSF[id][mapDay], ch = GWF[id][mapDay], tot = D.episodes[3][k];
+  return `<b style="font-family:var(--mono)">${id}</b><br><span style="color:${css("--muted")}">${fmtD(mapDay)}</span><br>Grundwasserstand: <b>${nf(lvl,3)} m</b><br>Änderung seit 01.03.2025: <b>${sg(ch, 3)} m</b>${sparkSVG(id, mapDay)}<span style="font-size:.85em">Gesamter Zeitraum (01.03.25-22.09.26): <b>${sg(tot, 3)} m</b></span><br><span style="font-size:.78em;color:${css("--muted")}">Quelle: [2], [3], eigene Auswertung</span>`;
+}
+function iconFor(id){
+  const ch = GWF[id][mapDay], c = ch < 0 ? css("--dry") : css("--gw");
+  return L.divIcon({className:"", html:`<div class="mk" style="background:${c}">${ch == null ? "-" : sg(ch, 2)}</div>`, iconSize:[48, 26], iconAnchor:[24, 13], popupAnchor:[0, -12]});
+}
+function drawMap(){
+  if (!window.L){ document.getElementById("map").innerHTML = "<p style='padding:16px'>Die Karte konnte nicht geladen werden.</p>"; return; }
+  map = L.map("map", {scrollWheelZoom:false, zoomSnap:0.25, attributionControl:true});
+  map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
+  const styleFor = f => { const k = f.properties.k;
+    if (k === "water") return {color:css("--rain-soft"), weight:1, fillColor:css("--rain-soft"), fillOpacity:.75};
+    if (k === "airport") return {color:css("--asphalt"), weight:2, dashArray:"6 5", fillColor:css("--asphalt-bg"), fillOpacity:.6};
+    if (k === "apron") return {color:css("--asphalt"), weight:0, fillColor:css("--asphalt"), fillOpacity:.35};
+    if (k === "runway") return {color:css("--asphalt"), weight:7, fillColor:css("--asphalt"), fillOpacity:.9, lineCap:"butt"};
+    if (k === "taxiway") return {color:css("--asphalt"), weight:2.5, opacity:.6};
+    if (k === "terminal") return {color:css("--asphalt-dark"), weight:1, fillColor:css("--asphalt-dark"), fillOpacity:.8};
+    if (k === "park") return {color:css("--green"), weight:1, fillColor:css("--green-soft"), fillOpacity:.5};
+    if (k === "road") return {color:css("--rule"), weight:3, opacity:1};
+    return {}; };
+  const order = ["water","park","airport","road","apron","taxiway","runway","terminal"];
+  const fc = GEO.features.slice().sort((a, b) => order.indexOf(a.properties.k) - order.indexOf(b.properties.k));
+  const layer = L.geoJSON({type:"FeatureCollection", features:fc}, {style:styleFor, interactive:false, attribution:'Kartendaten © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> (ODbL) · Messstellen: eigene Daten'}).addTo(map);
+  const ap = GEO.features.find(f => f.properties.k === "airport");
+  map.fitBounds(L.geoJSON(ap).getBounds().extend([52.5667, 13.3195]).pad(0.04));
+  const lbl = (latlng, n, c) => L.marker(latlng, {icon:L.divIcon({className:"", html:`<span style="font-family:var(--mono);font-size:11px;color:${c};white-space:nowrap">${n}</span>`, iconSize:[120, 14], iconAnchor:[60, 7]}), interactive:false, keyboard:false}).addTo(map);
+  ["Tegeler See", "Flughafensee"].forEach(n => { const f = GEO.features.filter(q => q.properties.n === n); if (f.length) lbl(L.geoJSON({type:"FeatureCollection", features:f}).getBounds().getCenter(), n, css("--rain")); });
+  lbl(L.geoJSON(ap).getBounds().getCenter(), "ehem. Flughafen Tegel", css("--asphalt-dark"));
+  D.stations.forEach(st => {
+    const m = L.marker([st.lat, st.lon], {icon:iconFor(st.id), title:st.id, riseOnHover:true}).addTo(map);
+    m.bindPopup(() => popupHtml(st.id), {maxWidth:260});
+    m.on("popupopen", () => { openId = st.id; }); m.on("popupclose", () => { if (openId === st.id) openId = null; });
+    markers[st.id] = m;
+  });
+  const btns = document.getElementById("station-btns");
+  IDS.forEach(id => { const b = document.createElement("button"); b.textContent = id; b.onclick = () => { markers[id].openPopup(); map.panTo(markers[id].getLatLng()); }; btns.appendChild(b); });
+  const r = document.getElementById("map-day"), lab = document.getElementById("map-date");
+  const upd = () => { mapDay = +r.value; lab.textContent = fmtD(mapDay); IDS.forEach(id => markers[id].setIcon(iconFor(id))); if (openId) markers[openId].setPopupContent(popupHtml(openId)); };
+  r.max = N - 1; r.value = N - 1; r.addEventListener("input", upd); upd();
+}
+
+initRefs();
+function drawAll(){ stationBars("bars-spring", D.episodes[0], {period:"01.03.-30.04.2025"}); stationBars("bars-2026", D.episodes[2], {period:"19.04.-19.06.2026"}); stationBars("bars-total", D.episodes[3], {period:"01.03.2025-22.09.2026"}); drawJuly(); drawAprMar(); drawSpark32(); drawScrolly(); drawLag(); }
+drawAll(); drawMap();
+let rz, lastW = innerWidth; addEventListener("resize", () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(rz); rz = setTimeout(() => { drawAll(); map && map.invalidateSize(); }, 150); });
+</script>
+</body>
+</html>

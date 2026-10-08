@@ -1,0 +1,133 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     13.319056,
+     52.561667
+    ]
+   },
+   "properties": {
+    "messstelle": "gwm21-23-op",
+    "pegel_m_22_09_2026": 31.73,
+    "pegel_m_01_03_2025": 32.12,
+    "aenderung_gesamt_m": -0.398
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     13.306001,
+     52.566095
+    ]
+   },
+   "properties": {
+    "messstelle": "gwm41-22-op",
+    "pegel_m_22_09_2026": 30.68,
+    "pegel_m_01_03_2025": 31.03,
+    "aenderung_gesamt_m": -0.344
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     13.290053,
+     52.550355
+    ]
+   },
+   "properties": {
+    "messstelle": "gwm45-23-op",
+    "pegel_m_22_09_2026": 30.1,
+    "pegel_m_01_03_2025": 30.49,
+    "aenderung_gesamt_m": -0.387
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     13.286475,
+     52.555499
+    ]
+   },
+   "properties": {
+    "messstelle": "gwm36-23-op",
+    "pegel_m_22_09_2026": 29.84,
+    "pegel_m_01_03_2025": 30.29,
+    "aenderung_gesamt_m": -0.452
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     13.269989,
+     52.555153
+    ]
+   },
+   "properties": {
+    "messstelle": "gwm29-22a-mp",
+    "pegel_m_22_09_2026": 29.03,
+    "pegel_m_01_03_2025": 29.61,
+    "aenderung_gesamt_m": -0.581
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     13.26529,
+     52.556338
+    ]
+   },
+   "properties": {
+    "messstelle": "gwm30-22-op",
+    "pegel_m_22_09_2026": 28.48,
+    "pegel_m_01_03_2025": 29.16,
+    "aenderung_gesamt_m": -0.676
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     13.265586,
+     52.560594
+    ]
+   },
+   "properties": {
+    "messstelle": "gwm42-22-op",
+    "pegel_m_22_09_2026": 28.44,
+    "pegel_m_01_03_2025": 28.81,
+    "aenderung_gesamt_m": -0.376
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     13.256818,
+     52.555962
+    ]
+   },
+   "properties": {
+    "messstelle": "gwm32-22-op",
+    "pegel_m_22_09_2026": 27.0,
+    "pegel_m_01_03_2025": 28.31,
+    "aenderung_gesamt_m": -1.312
+   }
+  }
+ ]
+}
